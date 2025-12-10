@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Search, Heart, ShoppingCart, User } from "lucide-react";
+import appRoute from "./appRoute";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isShrunk, setIsShrunk] = useState(false);
@@ -16,6 +18,8 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const navRoute=appRoute.filter((item)=>item.name)
 
   return (
     <header
@@ -66,13 +70,15 @@ const Header = () => {
             ${isShrunk ? "gap-4" : "gap-6"}
           `}
         >
-          <span className="hidden sm:block font-medium hover:underline cursor-pointer">Home</span>
-          <span className="hidden sm:block font-medium hover:underline cursor-pointer">T-shirt</span>
-          <span className="hidden sm:block font-medium hover:underline cursor-pointer">Shirt</span>
-          <span className="hidden sm:block font-medium hover:underline cursor-pointer">About Us</span>
+
+          {navRoute.map((item,id)=>(
+            <Link className="hidden sm:block font-medium hover:underline hover:text-orange-400 hover:text-lg cursor-pointer" key={id} to={item.path}>{item.name}</Link>
+          ))}
 
           <Heart size={22} className="cursor-pointer hover:text-gray-700" />
-          <ShoppingCart size={22} className="cursor-pointer hover:text-gray-700" />
+         <div id="cart-icon" className="flex items-center gap-1 cursor-pointer hover:text-gray-700">
+  <ShoppingCart size={22} />
+</div>
           <User size={22} className="cursor-pointer hover:text-gray-700" />
         </div>
       </div>

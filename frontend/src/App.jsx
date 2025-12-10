@@ -1,16 +1,23 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import {Routes,Route} from 'react-router-dom'
 import './App.css'
-import Signup from './Pages/Signup'
-import Login from './Pages/Login'
+import appRoute from './Components/appRoute'
+
 
 function App() {
   
   return (
    <>
-    <Signup/>
-    {/* <Login/> */}
+    <Routes>
+      {appRoute.map((item,id)=>(
+        <Route
+          key={id}
+          path={item.path}
+          element={<item.Component/>}
+        />
+      ))}
+    </Routes>
    </>
   )
 }

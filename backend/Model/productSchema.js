@@ -22,6 +22,18 @@ const productSchema=new mongoose.Schema({
     },
     sub_category:{
         type:String
+    },
+    color:{
+        type:String
+    },
+    seo:{
+        type:String
+    },
+    desc:{
+        type:String
+    },
+     image: {
+        type: [String] 
     }
 })
 

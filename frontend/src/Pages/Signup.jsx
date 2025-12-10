@@ -19,7 +19,7 @@ const Signup = () => {
     try {
       const res = await axios.post("http://localhost:5000/api/user/create", form);
 
-      console.log(res.data);
+      // console.log(res.data);
       alert('Sign up successful!'); 
       setForm({
         email: "",
@@ -38,10 +38,12 @@ const Signup = () => {
     <Header/>
  <div className="min-h-screen flex items-center justify-start pl-8 sm:pl-16 bg-gray-200 bg-[url('/image/form_background3.jpg')] bg-cover bg-center scale-x-[-1] p-4">
 
-  {/* Form wrapper (flip back to normal orientation) */}
-  <div className="w-full max-w-xl backdrop-blur-xl bg-white/20 border border-white/30 ml-60 p-8 sm:p-10 rounded-2xl shadow-2xl scale-x-[-1]">
+  {/* Form wrapper */}
+  <div className="w-full max-w-xl backdrop-blur-xl bg-white/20 border border-white/30 
+    ml-6 sm:ml-10 md:ml-20 lg:ml-40 xl:ml-60 
+    p-6 sm:p-6 rounded-2xl shadow-2xl scale-x-[-1]">
     
-    <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-8 leading-tight">
+    <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-4 leading-tight">
       Create Your Account
     </h1>
 
