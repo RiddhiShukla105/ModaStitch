@@ -128,7 +128,7 @@ const Tshirt = () => {
       </div>
 
       {/* ---------- QUICK VIEW MODAL ---------- */}
-      <Dialog
+      {/* <Dialog
         header={selectedProduct?.title}
         visible={visible}
         style={{ width: "35rem" }}
@@ -154,7 +154,7 @@ const Tshirt = () => {
             />
           </div>
         )}
-      </Dialog>
+      </Dialog> */}
 
       <Footer />
     </>

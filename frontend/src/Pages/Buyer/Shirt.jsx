@@ -61,7 +61,7 @@ const Shirt = () => {
     <>
       <Header />
         <h1 className="text-4xl font-bold text-center my-9">Latest Collection</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-8 ">
 
         {products.map((item, index) => (
           <div

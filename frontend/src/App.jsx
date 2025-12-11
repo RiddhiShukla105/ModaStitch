@@ -2,7 +2,10 @@ import { useState } from 'react'
 import viteLogo from '/vite.svg'
 import {Routes,Route} from 'react-router-dom'
 import './App.css'
+import "primeicons/primeicons.css";
 import appRoute from './Components/appRoute'
+
+
 
 
 function App() {

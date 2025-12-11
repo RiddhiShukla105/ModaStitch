@@ -1,71 +1,3 @@
-
-// import React, { useState, useEffect } from 'react';
-// import { Button } from 'primereact/button';
-// import { DataScroller } from 'primereact/datascroller';
-// import { Rating } from 'primereact/rating';
-// import { Tag } from 'primereact/tag';
-// import { ProductService } from './service/ProductService';
-
-// export default function BasicDemo() {
-//     const [products, setProducts] = useState([]);
-
-//     useEffect(() => {
-//         ProductService.getProducts().then((data) => setProducts(data));
-//     }, []); 
-
-//     const getSeverity = (product) => {
-//         switch (product.inventoryStatus) {
-//             case 'INSTOCK':
-//                 return 'success';
-
-//             case 'LOWSTOCK':
-//                 return 'warning';
-
-//             case 'OUTOFSTOCK':
-//                 return 'danger';
-
-//             default:
-//                 return null;
-//         }
-//     };
-
-//     const itemTemplate = (data) => {
-//         return (
-//             <div className="col-12">
-//                 <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-//                     <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://primefaces.org/cdn/primereact/images/product/${data.image}`} alt={data.name} />
-//                     <div className="flex flex-column lg:flex-row justify-content-between align-items-center xl:align-items-start lg:flex-1 gap-4">
-//                         <div className="flex flex-column align-items-center lg:align-items-start gap-3">
-//                             <div className="flex flex-column gap-1">
-//                                 <div className="text-2xl font-bold text-900">{data.name}</div>
-//                                 <div className="text-700">{data.description}</div>
-//                             </div>
-//                             <div className="flex flex-column gap-2">
-//                                 <Rating value={data.rating} readOnly cancel={false}></Rating>
-//                                 <span className="flex align-items-center gap-2">
-//                                     <i className="pi pi-tag product-category-icon"></i>
-//                                     <span className="font-semibold">{data.category}</span>
-//                                 </span>
-//                             </div>
-//                         </div>
-//                         <div className="flex flex-row lg:flex-column align-items-center lg:align-items-end gap-4 lg:gap-2">
-//                             <span className="text-2xl font-semibold">${data.price}</span>
-//                             <Button icon="pi pi-shopping-cart" label="Add to Cart" disabled={data.inventoryStatus === 'OUTOFSTOCK'}></Button>
-//                             <Tag value={data.inventoryStatus} severity={getSeverity(data)}></Tag>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         );
-//     };
-
-//     return (
-//         <div className="card">
-//             <DataScroller value={products} itemTemplate={itemTemplate} rows={5} buffer={0.4} header="List of Products" />
-//         </div>
-//     )
-// }
-        
 import React from 'react'
 
 const Wishlist = () => {
@@ -77,3 +9,40 @@ const Wishlist = () => {
 }
 
 export default Wishlist
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import { OrderList } from 'primereact/orderlist';
+// import { ProductService } from './service/ProductService';
+
+// export default function FilterDemo() {
+//     const [products, setProducts] = useState([]);
+
+//     useEffect(() => {
+//         ProductService.getProductsSmall().then((data) => setProducts(data));
+//     }, []);
+
+//     const itemTemplate = (item) => {
+//         return (
+//             <div className="flex flex-wrap p-2 align-items-center gap-3">
+//                 <img className="w-4rem shadow-2 shrink-0 border-round" src={`https://primefaces.org/cdn/primereact/images/product/${item.image}`} alt={item.name} />
+//                 <div className="flex-1 flex flex-column gap-2 xl:mr-8">
+//                     <span className="font-bold">{item.name}</span>
+//                     <div className="flex align-items-center gap-2">
+//                         <i className="pi pi-tag text-sm"></i>
+//                         <span>{item.category}</span>
+//                     </div>
+//                 </div>
+//                 <span className="font-bold text-900">${item.price}</span>
+//             </div>
+//         );
+//     };
+    
+//     return (
+//         <div className="card xl:flex xl:justify-content-center">
+//             <OrderList dataKey="id" value={products} onChange={(e) => setProducts(e.value)} itemTemplate={itemTemplate} header="Products" filter filterBy="name" filterPlaceholder="Search products"></OrderList>
+//         </div>
+//     )
+// }
+        

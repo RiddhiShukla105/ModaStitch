@@ -60,3 +60,25 @@ export const loadProduct=async(req,res)=>{
         return res.status(500).json({success:false,message:"Backend Error"})
     }
 }
+
+export const deleteProduct=async(req,res)=>{
+    try{
+        const{id}=req.params
+        const product=await Product.findByIdAndDelete(id)
+         return res.status(200).json({success:true,message:"Products Deleted",product})
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({success:false,message:"Backend Error"})
+    }
+}
+
+export const editProduct=async(req,res)=>{
+    try{
+        const{id}=req.params
+        const product=await Product.findByIdAndUpdate(id,req.body,{new:true})
+        return res.status(200).json({success:true,message:"Products Updated",product})
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({success:false,message:"Backend Error"})
+    }
+}
