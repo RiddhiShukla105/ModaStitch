@@ -15,10 +15,13 @@
     "lucide-react": "^0.556.0",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.7",
+    "razorpay": "^2.9.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.10.1",
+    "react-toastify": "^11.0.5",
+    "sweetalert2": "^11.26.4",
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {

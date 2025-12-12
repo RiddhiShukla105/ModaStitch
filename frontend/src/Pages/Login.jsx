@@ -40,6 +40,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Header from "../Components/Header";
+import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
+
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -51,18 +56,43 @@ const Login = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post("http://localhost:5000/api/user/login", form);
-      console.log(res.data);
-      alert("Login successful!");
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Invalid credentials. Try again.");
-    }
-  };
+  const navigate = useNavigate();
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await axios.post("http://localhost:5000/api/user/login", form);
+  //     console.log(res.data);
+  //     alert("Login successful!");
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     alert("Invalid credentials. Try again.");
+  //   }
+  // };
+
+
+
+   const handleSubmit = (event) => {
+    event.preventDefault();
+
+    axios
+      .post("http://localhost:5000/api/user/login", form)
+      .then((res) => {
+        if (res.data.token) {
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("role", res.data.role);
+          window.dispatchEvent(new Event("login"));
+        }
+Swal.fire("Success", res.data.message, "success").then(() => {
+  if (res.data.role === "admin") navigate("/dashboard", { replace: true });
+  else navigate("/", { replace: true }); // buyer
+});
+
+      })
+      .catch((err) => {
+        Swal.fire("Login failed:", err.message, "error");
+      });
+  };
   return (
     <>
     <Header/>
@@ -129,9 +159,9 @@ const Login = () => {
 
     <p className="text-center text-gray-700 mt-6 text-base">
       Don’t have an account?
-      <a href="#" className="text-indigo-600 font-medium hover:underline ml-1">
+      <Link to="/sign" className="text-indigo-600 font-medium hover:underline ml-1">
         Sign up here
-      </a>
+      </Link>
     </p>
 
   </div>

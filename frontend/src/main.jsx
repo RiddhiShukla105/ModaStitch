@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import {BrowserRouter} from 'react-router-dom'
+import { WishlistProvider } from './Context/WishlistContext.jsx'
+import { CartProvider } from './Context/CartContext.jsx'
 import './index.css'
 
 import App from './App.jsx'
@@ -14,7 +16,11 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
   <StrictMode>
+   <WishlistProvider>
+  <CartProvider>
     <App />
+  </CartProvider>
+</WishlistProvider>
   </StrictMode>
   </BrowserRouter>,
 )

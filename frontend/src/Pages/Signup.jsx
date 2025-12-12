@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Header from '../Components/Header';
+import { Link } from 'react-router-dom';
 
 
 const Signup = () => {
@@ -107,7 +108,7 @@ const Signup = () => {
 
     <p className="text-center text-gray-700 mt-6 text-base">
       Already have an account?
-      <a href="#" className="text-indigo-600 font-medium hover:underline ml-1">Sign in here</a>
+      <Link to="/login" className="text-indigo-600 font-medium hover:underline ml-1">Sign in here</Link>
     </p>
 
   </div>

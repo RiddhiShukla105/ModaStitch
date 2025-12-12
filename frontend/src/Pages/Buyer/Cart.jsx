@@ -1,55 +1,50 @@
-import React, { useState,useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Header from "../../Components/Header";
-import { useLocation,useParams,Link,useNavigate } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
+import { CartContext } from "../../Context/CartContext";
+  import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  // const [cartItems, setCartItems] = useState([
-  //   {
-  //     id: 1,
-  //     name: "Men Black Oversized T-Shirt",
-  //     price: 799,
-  //     mrp: 1299,
-  //     size: "L",
-  //     qty: 1,
-  //     image: "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/27384146/2024/3/12/fakeimg.jpg"
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Blue Regular Fit Shirt",
-  //     price: 999,
-  //     mrp: 1499,
-  //     size: "M",
-  //     qty: 1,
-  //     image: "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/28419157/shirtfake.jpg"
-  //   }
-  // ]);
-
-
   const location = useLocation();
-const [cartItems, setCartItems] = useState([]);
 
-useEffect(() => {
-  if (location.state) {
-    setCartItems([location.state]);
-  }
-}, [location.state]);
-  //  const token = localStorage.getItem("token");
+  const {
+    cartItems,
+    setCartItems,
+    updateQty,
+    removeItem
+  } = useContext(CartContext);
 
 
-  const updateQty = (id, diff) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, qty: Math.max(1, item.qty + diff) }
-          : item
-      )
-    );
-  };
 
-  const removeItem = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
 
+const navigate = useNavigate();
+
+  // If coming from product page (location.state), add single item
+  useEffect(() => {
+    if (location.state) {
+      const item = location.state;
+
+      setCartItems((prev) => {
+        const exists = prev.find(
+          (p) => p.id === item.id && p.size === item.size
+        );
+
+        // If already exists → increase qty
+        if (exists) {
+          return prev.map((p) =>
+            p.id === item.id && p.size === item.size
+              ? { ...p, qty: p.qty + 1 }
+              : p
+          );
+        }
+
+        // Else add new item
+        return [...prev, { ...item, qty: 1 }];
+      });
+    }
+  }, [location.state, setCartItems]);
+
+  // Price calculations
   const totalMRP = cartItems.reduce((t, i) => t + i.mrp * i.qty, 0);
   const totalPrice = cartItems.reduce((t, i) => t + i.price * i.qty, 0);
   const discount = totalMRP - totalPrice;
@@ -66,7 +61,7 @@ useEffect(() => {
 
             {cartItems.map((item) => (
               <div
-                key={item.id}
+                key={`${item.id}-${item.size}`}
                 className="bg-white rounded-xl shadow p-4 flex gap-5"
               >
                 {/* IMAGE */}
@@ -156,9 +151,12 @@ useEffect(() => {
               <span>₹{totalPrice}</span>
             </div>
 
-            <button className="w-full bg-pink-600 mt-6 text-white py-3 rounded-lg text-lg font-semibold hover:bg-pink-700 transition">
-              PLACE ORDER
-            </button>
+            <button
+  onClick={() => navigate("/order")}
+  className="w-full bg-pink-600 mt-6 text-white py-3 rounded-lg text-lg font-semibold hover:bg-pink-700 transition"
+>
+  PLACE ORDER
+</button>
           </div>
         </div>
       </div>

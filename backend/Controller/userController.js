@@ -1,6 +1,8 @@
 import express from 'express'
 import User from '../Model/useSchema.js'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken';
+
 const saltRounds=10;
 
 export const createUser=async(req,res)=>{
@@ -33,15 +35,25 @@ export const loginUser=async(req,res)=>{
         if(!user_email){
             return res.status(400).json({success:false,message:"Credeatials are wrong!!"})
         }
-        // if(!user_email.password==password){
-        //     return res.status(400).json({success:false,message:"Credentails are wrong"})
-        // }
          const isMatch = await bcrypt.compare(password, user_email.password);
         if (!isMatch) return res.status(401).json({ message: 'Invalid password!' });
 
-        return res.status(200).json({message:true,message:"Login Successfull!!"})
-    }catch(error){
-        console.log(error)
-         return res.status(500).json({success:false,message:"Backend Error"})
-    }
+        // Generate JWT
+    const payload = { userId: user_email._id, role: user_email.role };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+        return res.status(200).json({
+      message: 'Login successful!',
+      token,
+      role: user_email.role,
+      user: {
+        id: user_email._id,
+        name:user_email.name,
+        email:user_email.email,
+      },
+    });
+    } catch (error) {
+    console.error("LOGIN ERROR →", error);
+    return res.status(500).json({ success: false, message: error.message });
+}
 }

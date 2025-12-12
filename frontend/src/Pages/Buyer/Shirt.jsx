@@ -1,11 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef ,useContext} from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/footer";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import HeartToggle from "./HeartToggle";
+import { WishlistContext } from "../../context/WishlistContext";
+
 
 const Shirt = () => {
+  const { addToWishlist } = useContext(WishlistContext);
+  
   const products = [
     { image: "/image/test1.png", title: "Trending", price: "Rs 400" },
     { image: "/image/test1.png", title: "New Arrivals", price: "Rs 400" },
@@ -139,3 +143,12 @@ const Shirt = () => {
 };
 
 export default Shirt;
+
+
+
+{/* <button
+  onClick={() => addToWishlist(product)}
+  className="text-gray-600 hover:text-red-500"
+>
+  ❤️ Add to Wishlist
+</button> */}

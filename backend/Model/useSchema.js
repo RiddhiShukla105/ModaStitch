@@ -12,7 +12,8 @@ const userSchema=new mongoose.Schema({
     phone:{
         type:String,
         required:true
-    }
+    },
+    role: { type: String, enum: ["buyer", "admin"], default: "buyer" }
 })
 
 export default mongoose.model('user',userSchema)

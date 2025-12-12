@@ -9,6 +9,8 @@ const PORT=process.env.PORT||8000
 /*Controllers */
 import user from './Routes/userRoutes.js'
 import product from './Routes/productRoutes.js'
+import cart from './Routes/cartRoutes.js'
+import order from './Routes/orderRoutes.js'
 
 const app=express()
 
@@ -20,7 +22,8 @@ connectDB()
 
 app.use('/api/user',user)
 app.use('/api/product',product)
-
+app.use('/api/cart',cart)
+app.use('/api/order',order)
 
 
 

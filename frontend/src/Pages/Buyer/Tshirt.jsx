@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,useContext } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/footer";
 import { Dialog } from "primereact/dialog";
@@ -6,8 +6,12 @@ import { Button } from "primereact/button";
 import HeartToggle from "./HeartToggle";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import { WishlistContext } from "../../Context/WishlistContext";
+
 
 const Tshirt = () => {
+
+  const { addToWishlist } = useContext(WishlistContext);
  
   const[productData,setproductData]=useState([])
 
@@ -87,7 +91,7 @@ const Tshirt = () => {
     <img
       src={`http://localhost:5000/uploads/${item.image[0]}`}
       alt={item.name}
-      className="rounded-lg w-full h-60 object-cover hover:scale-105 transition-all duration-300 cursor-pointer"
+      className="rounded-lg w-full h-60 object-scale-down hover:scale-105 transition-all duration-300 cursor-pointer"
       onClick={() => openQuickView(item)}
       ref={(el) => (imageRefs.current[index] = el)} // assign ref
     />
@@ -95,7 +99,7 @@ const Tshirt = () => {
     <div className="flex items-center justify-between mt-3">
       <h3 className="text-xl font-semibold">{item.name}</h3>
       <div className="w-6 h-6 flex items-center justify-center cursor-pointer">
-        <HeartToggle product={item} />
+        <HeartToggle product={item}/>
       </div>
     </div>
 
