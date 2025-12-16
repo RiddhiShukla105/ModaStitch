@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState,useEffect,useRef,useContext } from 'react'
 import Header from '../../Components/Header'
 import { Card } from 'primereact/card';
 import Footer from '../../Components/footer';
-        
+import { useNavigate,Link } from "react-router-dom";
+import axios from 'axios';
+import { CartContext } from "../../Context/CartContext";
+
 
 const MainPage = () => {
 
@@ -12,25 +15,40 @@ const MainPage = () => {
         {image:"/image/ancient4.png",title:"Best Selling"},
         {image:"/image/brown_plain2.jpg",title:"On Sale"}
     ]
+    const[form,setForm]=useState({
+      name:"",
+      email:"",
+      feedback:""
+    })
+    const[product,setProduct]=useState([])
+    const[shirt,setShirt]=useState([])
+    const { addToCart } = useContext(CartContext);
+    useEffect(()=>{
+      axios
+      .get("http://localhost:5000/api/product/load-product?limit=5")
+      .then((res) => setProduct(res.data.product.slice(0, 4)))
+      .catch((err) => console.error("Error fetching products:", err));
 
-    // Auto Slide Effect
-// React.useEffect(() => {
-//   let index = 0;
-//   const slider = document.getElementById("testimonial-slider");
-//   const dots = [document.getElementById("dot1"), document.getElementById("dot2"), document.getElementById("dot3")];
+      axios
+      .get("http://localhost:5000/api/product/load-product?category=shirt")
+      .then((res) => setShirt(res.data.product.slice(0, 4)))
+      .catch((err) => console.error("Error fetching products:", err));
 
-//   const slide = () => {
-//     index = (index + 1) % 3;
-//     slider.style.transform = `translateX(-${index * 100}%)`;
 
-//     dots.forEach((d, i) => {
-//       d.style.background = i === index ? "gray" : "#d1d5db";
-//     });
-//   };
+    },[])
 
-//   const interval = setInterval(slide, 10000);
-//   return () => clearInterval(interval);
-// }, []);
+const navigate=useNavigate()
+
+     const handleClick = (item) => {
+    navigate(`/tshirt/${item._id}`, { state: item });
+  };
+
+const imageRefs = useRef([]);
+
+const handleSubmit=(e)=>{
+  e.preventDefault();
+
+}
 
   return (
     <div>
@@ -144,16 +162,11 @@ const MainPage = () => {
 {/* FEATURED PRODUCTS */}
 <section className="px-4 sm:px-10 mt-16 mb-20">
   <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-    Featured Products
+    Featured T-shirts
   </h2>
 
   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
-    {[
-      { image: "/image/white2.jpg", name: "Classic Cotton Shirt", price: "$39" },
-      { image: "/image/wolf4.png", name: "Oversized Tee", price: "$44" },
-      { image: "/image/sea_green1.jpg", name: "Premium Hoodie", price: "$39" },
-      { image: "/image/bleach_wash_aura2.png", name: "Casual Denim Jacket", price: "$24" },
-    ].map((item, index) => (
+    {product.map((item, index) => (
       <div
         key={index}
         className="
@@ -172,13 +185,11 @@ const MainPage = () => {
         {/* Product Image */}
         <div className="w-full h-48 overflow-hidden">
           <img
-            src={item.image}
-            alt={item.name}
-            className="
-              w-full h-full object-cover 
-              transition duration-300 
-              hover:scale-105
-            "
+            src={`http://localhost:5000/uploads/${item.image[0]}`}
+            alt={item.seo}
+            className="rounded-lg w-full h-60 object-scale-down cursor-pointer hover:scale-105 transition"
+            onClick={() => handleClick(item)}
+            ref={(el) => (imageRefs.current[index] = el)}
           />
         </div>
 
@@ -188,12 +199,22 @@ const MainPage = () => {
             {item.name}
           </h3>
           <p className="text-xl font-bold text-green-600 mt-2">
-            {item.price}
+            ${item.price}
           </p>
 
           {/* Buttons */}
           <div className="flex items-center justify-between mt-4">
             <button
+              onClick={() => {
+                addToCart({
+                  id: item._id,
+                  name: item.name,
+                  image: `http://localhost:5000/uploads/${item.image[0]}`,
+                  price: item.price,
+                  mrp: item.mrp || item.price,
+                  size: "M",
+                });
+              }}
               className="
                 px-4 py-2 
                 bg-black 
@@ -208,6 +229,7 @@ const MainPage = () => {
             </button>
 
             <button
+              onClick={() => handleClick(item)}
               className="
                 px-4 py-2 
                 border border-gray-500 
@@ -224,25 +246,143 @@ const MainPage = () => {
       </div>
     ))}
   </div>
-   <button
-            className="
-              mt-6 
-              inline-block
-              bg-black
-              text-white
-              hover:bg-red-500
-              font-semibold
-              px-6 py-3
-              text-lg
-              rounded-full
-              shadow-lg
-              transition-all
-              duration-300
-              hover:scale-105
-            "
-          >
-            Shop Now
-          </button>
+
+  {/* Centered Shop Now Button */}
+  <div className="flex justify-center mt-8">
+    <Link to="/tshirt">
+      <button
+        className="
+          bg-black
+          text-white
+          hover:bg-red-500
+          font-semibold
+          px-8 py-3
+          text-lg
+          rounded-full
+          shadow-lg
+          transition-all
+          duration-300
+          hover:scale-105
+        "
+      >
+        Shop Now
+      </button>
+    </Link>
+  </div>
+</section>
+
+<section className="px-4 sm:px-10 mt-16 mb-20">
+  <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+    Featured Shirts
+  </h2>
+
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+    {shirt.map((item, index) => (
+      <div
+        key={index}
+        className="
+          bg-white 
+          rounded-xl
+          shadow-md 
+          overflow-hidden 
+          border border-gray-100
+          transition-all 
+          duration-300 
+          hover:shadow-2xl 
+          hover:-translate-y-1
+          cursor-pointer
+        "
+      >
+        {/* Product Image */}
+        <div className="w-full h-48 overflow-hidden">
+          <img
+            src={`http://localhost:5000/uploads/${item.image[0]}`}
+            alt={item.seo}
+            className="rounded-lg w-full h-60 object-scale-down cursor-pointer hover:scale-105 transition"
+            onClick={() => handleClick(item)}
+            ref={(el) => (imageRefs.current[index] = el)}
+          />
+        </div>
+
+        {/* Product Details */}
+        <div className="p-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {item.name.length > 60
+              ? item.name.slice(0, 60) + "…"
+              : item.name}
+          </h3>
+
+          <p className="text-xl font-bold text-green-600 mt-2">
+            ${item.price}
+          </p>
+
+          {/* Buttons */}
+          <div className="flex items-center justify-between mt-4">
+            <button
+              onClick={() => {
+                addToCart({
+                  id: item._id,
+                  name: item.name,
+                  image: `http://localhost:5000/uploads/${item.image[0]}`,
+                  price: item.price,
+                  mrp: item.mrp || item.price,
+                  size: "M",
+                });
+              }}
+              className="
+                px-4 py-2 
+                bg-black 
+                text-white 
+                rounded-lg 
+                text-sm 
+                hover:bg-gray-800
+                transition
+              "
+            >
+              Add to Cart
+            </button>
+
+            <button
+              onClick={() => handleClick(item)}
+              className="
+                px-4 py-2 
+                border border-gray-500 
+                rounded-lg 
+                text-sm 
+                hover:bg-gray-100 
+                transition
+              "
+            >
+              View
+            </button>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* CENTERED SHOP BUTTON (after grid, not between cards) */}
+  <div className="flex justify-center mt-6">
+    <Link to="/shirt">
+      <button
+        className="
+          bg-black
+          text-white
+          hover:bg-red-500
+          font-semibold
+          px-6 py-3
+          text-lg
+          rounded-full
+          shadow-lg
+          transition-all
+          duration-300
+          hover:scale-105
+        "
+      >
+        Shop Now
+      </button>
+    </Link>
+  </div>
 </section>
 
 
@@ -254,9 +394,9 @@ const MainPage = () => {
     <h2 className="text-3xl font-bold text-gray-900 ml-150">
       Deal of the Day
     </h2>
-    <p className="text-lg font-medium text-red-600 mt-2 sm:mt-0">
+    {/* <p className="text-lg font-medium text-red-600 mt-2 sm:mt-0">
       ⏳ Ends in: <span className="font-bold">05:12:40</span>
-    </p>
+    </p> */}
   </div>
 
   <div
@@ -297,14 +437,24 @@ const MainPage = () => {
 
       {/* Price Block */}
       <div className="mt-5 flex items-end gap-4">
-        <span className="text-4xl font-extrabold text-green-600">₹499</span>
-        <span className="text-lg line-through text-gray-400">₹999</span>
-        <span className="text-lg font-semibold text-red-600">50% OFF</span>
+        <span className="text-4xl font-extrabold text-green-600">$24</span>
+        <span className="text-lg line-through text-gray-400">$29</span>
+        <span className="text-lg font-semibold text-red-600">10% OFF</span>
       </div>
 
       {/* Buttons */}
       <div className="flex items-center gap-4 mt-6">
         <button
+        onClick={() => {
+                addToCart({
+                  id: item._id,
+                  name: item.name,
+                  image: `http://localhost:5000/uploads/${item.image[0]}`,
+                  price: item.price,
+                  mrp: item.mrp || item.price,
+                  size: "M",
+                });
+              }}
           className="
             px-6 py-3 
             bg-black 
@@ -321,6 +471,7 @@ const MainPage = () => {
         </button>
 
         <button
+        onClick={() => handleClick(item)}
           className="
             px-6 py-3 
             border border-gray-500
@@ -335,9 +486,9 @@ const MainPage = () => {
       </div>
 
       {/* Guarantee */}
-      <p className="mt-6 text-gray-500 text-sm">
+      {/* <p className="mt-6 text-gray-500 text-sm">
         ✔ 7-day easy return & exchange policy  
-      </p>
+      </p> */}
     </div>
   </div>
 </section>
@@ -427,71 +578,46 @@ const MainPage = () => {
 </section>
 
 
-{/* NEWSLETTER SIGNUP CTA */}
-<section className="px-4 sm:px-10 mt-20">
-  <div
-    className="
-      w-full 
-      rounded-3xl 
-      py-12 
-      px-6 
-      sm:px-16 
-      bg-linear-to-r 
-      from-black 
-      via-gray-900 
-      to-gray-800 
-      text-white 
-      shadow-2xl
-      flex 
-      flex-col 
-      items-center 
-      text-center
-    "
-  >
-    <h2 className="text-3xl sm:text-4xl font-extrabold tracking-wide">
-      Join Our Newsletter
+{/* FEEDBACK FORM SECTION */}
+<section className="px-4 sm:px-10 mt-20 mb-20">
+  <div className="w-full max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl p-8 sm:p-12">
+    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center">
+      Give Us Your Feedback
     </h2>
-    <p className="mt-3 text-gray-300 text-lg max-w-xl">
-      Stay updated with new arrivals, exclusive deals, and special offers directly in your inbox.
+    <p className="mt-3 text-gray-600 text-center text-lg">
+      We’d love to hear your thoughts, suggestions, or any issues you encountered.
     </p>
 
-    {/* Input Box */}
-    <div className="mt-6 flex w-full max-w-xl bg-white rounded-full overflow-hidden shadow-lg">
+    <form className="mt-8 flex flex-col gap-6">
+      <input
+        type="text"
+        name="name"
+        placeholder="Your Name"
+        className="w-full px-5 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-red-500"
+      />
       <input
         type="email"
-        placeholder="Enter your email address"
-        className="
-          flex-1 
-          px-5 
-          py-3 
-          outline-none 
-          text-gray-700 
-          placeholder-gray-500
-        "
+        name="email"
+        placeholder="Your Email"
+        className="w-full px-5 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-red-500"
       />
+      <textarea
+        rows={5}
+        placeholder="Your Feedback"
+        name="feedback"
+        className="w-full px-5 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-red-500 resize-none"
+      ></textarea>
       <button
-        className="
-          bg-red-500 
-          hover:bg-red-600 
-          px-6 
-          sm:px-8 
-          text-lg 
-          font-semibold 
-          rounded-full 
-          transition-all 
-          duration-300
-          text-white
-        "
+        type="submit"
+        onClick={handleSubmit}
+        className="bg-black hover:bg-black/60 text-white text-lg font-semibold py-3 rounded-xl transition-all duration-300"
       >
-        Subscribe
+        Submit Feedback
       </button>
-    </div>
-
-    <p className="text-gray-400 text-sm mt-3">
-      We respect your privacy. Unsubscribe anytime.
-    </p>
+    </form>
   </div>
 </section>
+
 
 <Footer/>
 
@@ -500,3 +626,5 @@ const MainPage = () => {
 }
 
 export default MainPage
+
+

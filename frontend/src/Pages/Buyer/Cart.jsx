@@ -14,38 +14,20 @@ const Cart = () => {
     removeItem
   } = useContext(CartContext);
 
+  useEffect(() => {
+  // console.log("🧺 Cart page updated", cartItems);
+}, [cartItems]);
 
 
 
 const navigate = useNavigate();
 
-  // If coming from product page (location.state), add single item
-  useEffect(() => {
-    if (location.state) {
-      const item = location.state;
+  
+ const totalMRP = cartItems.reduce(
+  (t, i) => t + (i.mrp || i.price) * i.qty,
+  0
+);
 
-      setCartItems((prev) => {
-        const exists = prev.find(
-          (p) => p.id === item.id && p.size === item.size
-        );
-
-        // If already exists → increase qty
-        if (exists) {
-          return prev.map((p) =>
-            p.id === item.id && p.size === item.size
-              ? { ...p, qty: p.qty + 1 }
-              : p
-          );
-        }
-
-        // Else add new item
-        return [...prev, { ...item, qty: 1 }];
-      });
-    }
-  }, [location.state, setCartItems]);
-
-  // Price calculations
-  const totalMRP = cartItems.reduce((t, i) => t + i.mrp * i.qty, 0);
   const totalPrice = cartItems.reduce((t, i) => t + i.price * i.qty, 0);
   const discount = totalMRP - totalPrice;
 
@@ -81,26 +63,26 @@ const navigate = useNavigate();
 
                   {/* PRICE */}
                   <div className="mt-3 flex items-center gap-3">
-                    <span className="text-xl font-bold">₹{item.price}</span>
-                    <span className="line-through text-gray-400">
+                    <span className="text-xl font-bold">${item.price}</span>
+                    {/* <span className="line-through text-gray-400">
                       ₹{item.mrp}
-                    </span>
-                    <span className="text-green-600 font-semibold">
+                    </span> */}
+                    {/* <span className="text-green-600 font-semibold">
                       {Math.round(((item.mrp - item.price) / item.mrp) * 100)}% OFF
-                    </span>
+                    </span> */}
                   </div>
 
                   {/* QUANTITY */}
                   <div className="mt-4 flex items-center gap-3">
                     <button
-                      onClick={() => updateQty(item.id, -1)}
+                     onClick={() => updateQty(item.id, item.size, -1)}
                       className="border w-7 h-7 rounded flex items-center justify-center"
                     >
                       –
                     </button>
                     <span>{item.qty}</span>
                     <button
-                      onClick={() => updateQty(item.id, 1)}
+                      onClick={() => updateQty(item.id, item.size, 1)}
                       className="border w-7 h-7 rounded flex items-center justify-center"
                     >
                       +
@@ -110,7 +92,7 @@ const navigate = useNavigate();
                   {/* ACTIONS */}
                   <div className="mt-4 flex gap-6 text-sm font-semibold">
                     <button
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => removeItem(item.id, item.size)}
                       className="text-gray-700 hover:text-black"
                     >
                       REMOVE
@@ -133,12 +115,12 @@ const navigate = useNavigate();
 
             <div className="mt-4 flex justify-between text-gray-600">
               <span>Total MRP</span>
-              <span>₹{totalMRP}</span>
+              <span>${totalMRP}</span>
             </div>
 
             <div className="mt-3 flex justify-between text-green-600">
               <span>Discount</span>
-              <span>−₹{discount}</span>
+              <span>−${discount}</span>
             </div>
 
             <div className="mt-3 flex justify-between">
@@ -148,7 +130,7 @@ const navigate = useNavigate();
 
             <div className="mt-4 border-t pt-4 flex justify-between font-bold text-lg">
               <span>Total Amount</span>
-              <span>₹{totalPrice}</span>
+              <span>${totalPrice}</span>
             </div>
 
             <button

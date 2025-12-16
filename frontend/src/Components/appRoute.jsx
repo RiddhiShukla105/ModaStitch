@@ -10,10 +10,11 @@ import Admin from "../Pages/Admin/Admin";
 import Cart from "../Pages/Buyer/Cart";
 import ProductData from "../Pages/Admin/ProductData";
 import UserData from "../Pages/Admin/UserData";
-import Dashboard from "../Pages/Admin/Dashboard";
 import OrderUpdate from "../Pages/Admin/OrderUpdate"
 import Payment from "../Pages/Buyer/Payment";
 import Order from "../Pages/Buyer/Order";
+import OrderTracking from "../Pages/Buyer/OrderTracking";
+import AdminDashboard from "../Pages/Admin/AdminDashboard";
 
 
 
@@ -23,7 +24,7 @@ const appRoute=[
     {path:"/tshirt",Component:Tshirt,name:"T-shirt",role:"buyer"},
     {path:"/shirt",Component:Shirt,name:"Shirt",role:"buyer"},
     {path:"/admin",Component:Admin,role:"admin"},
-    {path:"/dashboard",Component:Dashboard,name:"Dashboard",role:"admin"},
+    {path:"/dashboard",Component:AdminDashboard,name:"Dashboard",role:"admin"},
     {path:"/cart",Component:Cart},
     {path:"/wishlist",Component:Wishlist},
     {path:"/tshirt/:id",Component:Item},
@@ -33,7 +34,8 @@ const appRoute=[
     {path:"/userdata",Component:UserData,role:"admin"},
     {path:"/orderupdate",Component:OrderUpdate,role:"admin"},
     {path:"/payment",Component:Payment},
-    {path:"/order",Component:Order}
+    {path:"/order",Component:Order},
+    {path:"/ordertracking",Component:OrderTracking,name:"Orders",role:"buyer"}
 ]
 
 export default appRoute

@@ -5,6 +5,7 @@ import './App.css'
 import "primeicons/primeicons.css";
 import appRoute from './Components/appRoute'
 import ProtectedRoute from './Components/ProtectedRoute';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 
 
@@ -14,6 +15,12 @@ function App() {
   
   return (
    <>
+   <PayPalScriptProvider
+      options={{
+        "client-id": process.env.PAYPAL_CLIENT_ID,
+        currency: "USD"
+      }}
+    >
     <Routes>
       {/* {appRoute.map((item,id)=>(
         <Route
@@ -44,6 +51,7 @@ function App() {
 })}
 
     </Routes>
+    </PayPalScriptProvider>
    </>
   )
 }

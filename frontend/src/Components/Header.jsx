@@ -1,105 +1,111 @@
 // import React, { useContext, useEffect, useState } from "react";
-// import { Search, Heart, ShoppingCart, User } from "lucide-react";
+// import {
+//   AiOutlineSearch,
+//   AiOutlineHeart,
+//   AiOutlineShoppingCart,
+//   AiOutlineUser,
+// } from "react-icons/ai";
+
 // import appRoute from "./appRoute";
-// import { Link } from "react-router-dom";
+// import { Link, useLocation, useNavigate } from "react-router-dom";
 // import { ToastContainer, toast, Bounce } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
 // import { FaUser } from "react-icons/fa";
-// import { AiOutlineLogout } from "react-icons/ai";
+// import { CartContext } from "../Context/CartContext";
+
 
 // const Header = () => {
 //   const [isShrunk, setIsShrunk] = useState(false);
+//   const location = useLocation();
+//   const navigate = useNavigate();
 
 //   useEffect(() => {
-//     const handleScroll = () => {
-//       if (window.scrollY > 30) {
-//         setIsShrunk(true);
-//       } else {
-//         setIsShrunk(false);
-//       }
-//     };
-
+//     const handleScroll = () => setIsShrunk(window.scrollY > 30);
 //     window.addEventListener("scroll", handleScroll);
 //     return () => window.removeEventListener("scroll", handleScroll);
 //   }, []);
 
-//   const hideHeaderRoutes = [
-//   "/dashboard",
-// ];
+//   const hideHeaderRoutes = ["/dashboard"];
+//   const shouldHideHeader = hideHeaderRoutes.some((path) =>
+//     location.pathname.startsWith(path)
+//   );
+//   if (shouldHideHeader) return null;
 
-// const shouldHideHeader=hideHeaderRoutes.some(path=>
-//   location.pathname.startsWith(path)
-// );
+//   const { logoutCart } = useContext(CartContext);
+//   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-// if(shouldHideHeader) return null;
+//   const role = localStorage.getItem("role");
 
-// const {logoutCart}=useContext(CartContext)
-// const[isLoggedIn,setIsLoggedIn]=useState(false)
+// // Show admin dashboard only if role === "admin"
+// const filteredRoutes = appRoute.filter((item) => {
+//   if (item.path === "/dashboard") {
+//     return role === "admin"; // only admin can see dashboard
+//   }
+//   return true; // everyone sees the rest
+// });
 
-//   const navRoute=appRoute.filter((item)=>item.name)
+//   const navRoute = appRoute.filter((item) => item.name);
 
-//   useEffect(()=>{
-//     const token=localStorage.getItem("token");
-//     setIsLoggedIn(!!token)
-//   },[]);
+//   useEffect(() => {
+//     setIsLoggedIn(!!localStorage.getItem("token"));
+//   }, []);
 
-//   const handleLogout=()=>{
+//   const handleLogout = () => {
+//   try {
 //     localStorage.removeItem("token");
 //     localStorage.removeItem("role");
-//     logoutCart();
-//     setIsLoggedIn(false);
-//   }
 
-//   toast("🦄 You are logged out!", {
-//         position: "top-right",
-//         autoClose: 2000,
-//         theme: "light",
-//         transition: Bounce,
-//       });
-  
-//       setTimeout(() => {
-//         navigate("/login");
-//       }, 3000);
-//     };
+//     if (logoutCart) logoutCart();
+
+//     setIsLoggedIn(false);
+
+//     toast("🦄 You are logged out!", {
+//       position: "top-right",
+//       autoClose: 1500,
+//       theme: "light",
+//       transition: Bounce,
+//     });
+
+//     setTimeout(() => {
+//       navigate("/login");
+//     }, 1600);
+    
+//   } catch (error) {
+//     console.error("Logout error:", error);
+//   }
+// };
+
 
 //   return (
 //     <header
-//       className={`
-//         w-full bg-white shadow-md sticky top-0 z-50 transition-all duration-300
-//         ${isShrunk ? "py-2 shadow-sm" : "py-3 shadow-md"}
-//       `}
+//       className={`w-full bg-white shadow-md sticky top-0 z-50 transition-all duration-300 ${
+//         isShrunk ? "py-2 shadow-sm" : "py-3 shadow-md"
+//       }`}
 //     >
-//       <div className="max-w-7xl mx-auto flex items-center justify-between transition-all duration-300 px-2 sm:px-6">
-
+//       <div className="max-w-7xl mx-auto flex items-center justify-between px-2 sm:px-6">
+        
 //         {/* LOGO */}
 //         <div className="flex items-center gap-2 cursor-pointer">
 //           <img
 //             src="/image/logo.jpg"
 //             alt="Logo"
-//             className={`object-contain transition-all duration-300
-//               ${isShrunk ? "h-10 w-12" : "h-14 w-16"}
-//             `}
+//             className={`${isShrunk ? "h-10 w-12" : "h-14 w-16"}`}
 //           />
-//           <h1
-//             className={`font-bold text-black tracking-wide transition-all duration-300
-//               ${isShrunk ? "text-xl" : "text-2xl"}
-//             `}
-//           >
+//           <h1 className={`font-bold text-black ${isShrunk ? "text-xl" : "text-2xl"}`}>
 //             ModaStitch
 //           </h1>
 //         </div>
 
 //         {/* SEARCH BAR */}
-//         <div className="flex-1 hidden sm:flex justify-center px-4 transition-all duration-300">
+//         <div className="flex-1 hidden sm:flex justify-center px-4">
 //           <div className="relative w-full max-w-lg">
 //             <input
 //               type="text"
 //               placeholder="Search for products, brands and more..."
-//               className="w-full py-2 pl-4 pr-12 border border-gray-300 rounded-full
-//               focus:ring-2 focus:ring-black focus:border-black outline-none text-black"
+//               className="w-full py-2 pl-4 pr-12 border border-gray-300 rounded-full"
 //             />
-//             <Search
+//             <AiOutlineSearch
 //               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600"
 //               size={20}
 //             />
@@ -107,217 +113,204 @@
 //         </div>
 
 //         {/* RIGHT ACTIONS */}
-//         <div
-//           className={`flex items-center gap-5 text-black transition-all duration-300 
-//             ${isShrunk ? "gap-4" : "gap-6"}
-//           `}
-//         >
+//         <div className="flex items-center gap-6 text-black">
+//           {filteredRoutes.map((item, id) => (
+//   <Link
+//     className="hidden sm:block font-medium hover:underline"
+//     key={id}
+//     to={item.path}
+//   >
+//     {item.name}
+//   </Link>
+// ))}
 
-//           {navRoute.map((item,id)=>(
-//             <Link className="hidden sm:block font-medium hover:underline hover:text-orange-400 hover:text-lg cursor-pointer" key={id} to={item.path}>{item.name}</Link>
-//           ))}
-
-//           {/* <Link to='/wishlist'><Heart size={22} className="cursor-pointer hover:text-gray-700" /></Link>
-//          <div id="cart-icon" className="flex items-center gap-1 cursor-pointer hover:text-gray-700">
-//   <Link to='/cart'><ShoppingCart size={22} /></Link>
-// </div>
-//           <User size={22} className="cursor-pointer hover:text-gray-700" />
-//         </div>
-//       </div> */}
-
-
-//            {isLoggedIn ? (
+//           {isLoggedIn ? (
 //             <>
-//             <Link to='/wishlist'><Heart size={22} className="cursor-pointer hover:text-gray-700" /></Link>
-//          <div id="cart-icon" className="flex items-center gap-1 cursor-pointer hover:text-gray-700">
-//   <Link to='/cart'><ShoppingCart size={22} /></Link>
-// </div>
-//           <User size={22} className="cursor-pointer hover:text-gray-700" />
-//         </>
+//               <Link to="/wishlist">
+//                 <AiOutlineHeart size={22} className="hover:text-gray-700" />
+//               </Link>
+
+//               <Link to="/cart" id="cart-icon">
+//                 <AiOutlineShoppingCart size={22} className="hover:text-gray-700"  />
+//               </Link>
+
+//               <AiOutlineUser
+//                 size={22}
+//                 onClick={handleLogout}
+//                 className="cursor-pointer hover:text-gray-700"
+//               />
+//             </>
 //           ) : (
-//             <Link to="/sign" style={{ color: "white", fontSize: 26 }}>
-//               <FaUser className="i" />
+//             <Link to="/sign">
+//               <FaUser size={22} className="text-black" />
 //             </Link>
 //           )}
-// {/* 
-          
-//       </div> */}
-//       </div>
-//       </div> 
-
-
-
-
-//       {/* MOBILE SEARCH */}
-//       <div className="sm:hidden mt-2 px-2 transition-all duration-300">
-//         <div className="relative w-full">
-//           <input
-//             type="text"
-//             placeholder="Search..."
-//             className="w-full py-2 pl-4 pr-12 border border-gray-300 rounded-full
-//             focus:ring-2 focus:ring-black focus:border-black outline-none text-black"
-//           />
-//           <Search
-//             className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600"
-//             size={20}
-//           />
 //         </div>
-//          <ToastContainer />
 //       </div>
+
+//       <ToastContainer />
 //     </header>
 //   );
 // };
 
 // export default Header;
-import React, { useContext, useEffect, useState } from "react";
-import {
-  AiOutlineSearch,
-  AiOutlineHeart,
-  AiOutlineShoppingCart,
-  AiOutlineUser,
-} from "react-icons/ai";
 
-import appRoute from "./appRoute";
+
+import React, { useContext, useEffect, useState } from "react";
+import { AiOutlineSearch, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineUser, AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import { FaUser } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import { FaUser } from "react-icons/fa";
+import appRoute from "./appRoute";
 import { CartContext } from "../Context/CartContext";
-
 
 const Header = () => {
   const [isShrunk, setIsShrunk] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { logoutCart } = useContext(CartContext);
 
+  const role = localStorage.getItem("role");
+
+  // Shrink header on scroll
   useEffect(() => {
     const handleScroll = () => setIsShrunk(window.scrollY > 30);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const hideHeaderRoutes = ["/dashboard"];
-  const shouldHideHeader = hideHeaderRoutes.some((path) =>
-    location.pathname.startsWith(path)
-  );
-  if (shouldHideHeader) return null;
-
-  const { logoutCart } = useContext(CartContext);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const role = localStorage.getItem("role");
-
-// Show admin dashboard only if role === "admin"
-const filteredRoutes = appRoute.filter((item) => {
-  if (item.path === "/dashboard") {
-    return role === "admin"; // only admin can see dashboard
-  }
-  return true; // everyone sees the rest
-});
-
-  const navRoute = appRoute.filter((item) => item.name);
-
+  // Check login status
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("token"));
   }, []);
 
+  // Hide header on certain routes
+  const hideHeaderRoutes = ["/dashboard"];
+  if (hideHeaderRoutes.some((path) => location.pathname.startsWith(path))) return null;
+
+  // Filter routes based on role (admin)
+  const filteredRoutes = appRoute
+    .filter((item) => (item.path === "/dashboard" ? role === "admin" : true))
+    .filter((item) => item.name);
+
   const handleLogout = () => {
-  try {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-
-    if (logoutCart) logoutCart();
-
-    setIsLoggedIn(false);
-
-    toast("🦄 You are logged out!", {
-      position: "top-right",
-      autoClose: 1500,
-      theme: "light",
-      transition: Bounce,
-    });
-
-    setTimeout(() => {
-      navigate("/login");
-    }, 1600);
-    
-  } catch (error) {
-    console.error("Logout error:", error);
-  }
-};
-
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      logoutCart?.();
+      setIsLoggedIn(false);
+      toast("🦄 You are logged out!", { position: "top-right", autoClose: 1500, theme: "light", transition: Bounce });
+      setTimeout(() => navigate("/login"), 1600);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
-    <header
-      className={`w-full bg-white shadow-md sticky top-0 z-50 transition-all duration-300 ${
-        isShrunk ? "py-2 shadow-sm" : "py-3 shadow-md"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-2 sm:px-6">
+    <header className={`w-full bg-white sticky top-0 z-50 transition-all duration-300 ${isShrunk ? "py-2 shadow-sm" : "py-3 shadow-md"}`}>
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6">
         
         {/* LOGO */}
-        <div className="flex items-center gap-2 cursor-pointer">
-          <img
-            src="/image/logo.jpg"
-            alt="Logo"
-            className={`${isShrunk ? "h-10 w-12" : "h-14 w-16"}`}
-          />
-          <h1 className={`font-bold text-black ${isShrunk ? "text-xl" : "text-2xl"}`}>
-            ModaStitch
-          </h1>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+          <img src="/image/logo.jpg" alt="Logo" className={`${isShrunk ? "h-10 w-12" : "h-14 w-16"}`} />
+          <h1 className={`font-bold text-black ${isShrunk ? "text-xl" : "text-2xl"}`}>ModaStitch</h1>
         </div>
 
-        {/* SEARCH BAR */}
+        {/* DESKTOP SEARCH BAR */}
         <div className="flex-1 hidden sm:flex justify-center px-4">
           <div className="relative w-full max-w-lg">
             <input
               type="text"
               placeholder="Search for products, brands and more..."
-              className="w-full py-2 pl-4 pr-12 border border-gray-300 rounded-full"
+              className="w-full py-2 pl-4 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-pink-600"
             />
-            <AiOutlineSearch
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600"
-              size={20}
-            />
+            <AiOutlineSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600" size={20} />
           </div>
         </div>
 
-        {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-6 text-black">
+        {/* DESKTOP NAV & ACTIONS */}
+        <div className="hidden sm:flex items-center gap-6 text-black">
           {filteredRoutes.map((item, id) => (
-  <Link
-    className="hidden sm:block font-medium hover:underline"
-    key={id}
-    to={item.path}
-  >
-    {item.name}
-  </Link>
-))}
+            <Link key={id} to={item.path} className="font-medium hover:underline">
+              {item.name}
+            </Link>
+          ))}
 
           {isLoggedIn ? (
             <>
               <Link to="/wishlist">
-                <AiOutlineHeart size={22} className="hover:text-gray-700" />
+                <AiOutlineHeart size={22} className="hover:text-gray-700 transition" />
               </Link>
 
-              <Link to="/cart">
-                <AiOutlineShoppingCart size={22} className="hover:text-gray-700" />
+              <Link to="/cart" id="cart-icon">
+                <AiOutlineShoppingCart size={22} className="hover:text-gray-700 transition" />
               </Link>
 
-              <AiOutlineUser
-                size={22}
-                onClick={handleLogout}
-                className="cursor-pointer hover:text-gray-700"
-              />
+              <AiOutlineUser size={22} onClick={handleLogout} className="cursor-pointer hover:text-gray-700 transition" />
             </>
           ) : (
             <Link to="/sign">
-              <FaUser size={22} className="text-black" />
+              <FaUser size={22} className="text-black hover:text-gray-700 transition" />
             </Link>
           )}
         </div>
+
+        {/* MOBILE HAMBURGER */}
+        <div className="sm:hidden flex items-center gap-4">
+          <AiOutlineSearch size={22} className="text-gray-600 cursor-pointer" />
+          <AiOutlineMenu size={28} className="text-gray-800 cursor-pointer" onClick={() => setMobileMenuOpen(true)} />
+        </div>
       </div>
+
+      {/* MOBILE MENU */}
+      {mobileMenuOpen && (
+        <div className="sm:hidden fixed inset-0 bg-black bg-opacity-50 z-40">
+          <div className="absolute top-0 right-0 w-3/4 max-w-xs h-full bg-white shadow-lg p-6 flex flex-col">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-bold text-xl">Menu</h2>
+              <AiOutlineClose size={28} className="cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
+            </div>
+
+            {/* NAV LINKS */}
+            <div className="flex flex-col gap-4 mb-6">
+              {filteredRoutes.map((item, id) => (
+                <Link
+                  key={id}
+                  to={item.path}
+                  className="font-medium text-gray-800 hover:text-pink-600"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+
+            {/* ACTIONS */}
+            <div className="flex items-center gap-4">
+              {isLoggedIn ? (
+                <>
+                  <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)}>
+                    <AiOutlineHeart size={22} className="hover:text-gray-700 transition" />
+                  </Link>
+
+                  <Link to="/cart" id="cart-icon" onClick={() => setMobileMenuOpen(false)}>
+                    <AiOutlineShoppingCart size={22} className="hover:text-gray-700 transition" />
+                  </Link>
+
+                  <AiOutlineUser size={22} onClick={handleLogout} className="cursor-pointer hover:text-gray-700 transition" />
+                </>
+              ) : (
+                <Link to="/sign" onClick={() => setMobileMenuOpen(false)}>
+                  <FaUser size={22} className="text-black hover:text-gray-700 transition" />
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <ToastContainer />
     </header>

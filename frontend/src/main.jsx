@@ -14,13 +14,15 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 
 createRoot(document.getElementById('root')).render(
+   <CartProvider>
   <BrowserRouter>
   <StrictMode>
    <WishlistProvider>
-  <CartProvider>
+ 
     <App />
-  </CartProvider>
+  
 </WishlistProvider>
   </StrictMode>
-  </BrowserRouter>,
+  </BrowserRouter>
+  </CartProvider>,
 )

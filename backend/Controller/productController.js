@@ -51,15 +51,40 @@ export const createProduct = async (req, res) => {
 };
 
 
-export const loadProduct=async(req,res)=>{
-    try{
-        const product=await Product.find()
-         return res.status(200).json({success:true,message:"Products Found",product})
-    }catch(error){
-        console.log(error)
-        return res.status(500).json({success:false,message:"Backend Error"})
+// export const loadProduct=async(req,res)=>{
+//     try{
+//         const product=await Product.find()
+//          return res.status(200).json({success:true,message:"Products Found",product})
+//     }catch(error){
+//         console.log(error)
+//         return res.status(500).json({success:false,message:"Backend Error"})
+//     }
+// }
+
+export const loadProduct = async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    let filter = {};
+
+    if (category) {
+      filter.category = category; // EXACT match
     }
-}
+
+    const products = await Product.find(filter);
+
+    res.status(200).json({
+      success: true,
+      product: products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 
 export const deleteProduct=async(req,res)=>{
     try{

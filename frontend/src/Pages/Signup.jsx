@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Header from '../Components/Header';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Signup = () => {
@@ -15,22 +18,47 @@ const Signup = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const navigate=useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!form.email || !form.password|| !form.phone) {
+    Swal.fire({ icon: "warning", title: "Please fill all fields" });
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(form.email)) {
+    Swal.fire({ icon: "error", title: "Invalid Email Format" });
+    return;
+  }
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  if (!passwordRegex.test(form.password)) {
+    Swal.fire({ icon: "error", title: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a digit, and a special character." });
+    return;
+  }
+
       const res = await axios.post("http://localhost:5000/api/user/create", form);
 
       // console.log(res.data);
-      alert('Sign up successful!'); 
+      toast.success('Sign up successful!', {
+      position: "top-right",
+      autoClose: 2000,
+    });
       setForm({
         email: "",
         password: "",
         phone: ""
       });
+      navigate('/')
 
     } catch (error) {
       console.error("Sign up error:", error.response ? error.response.data : error.message);
-      alert('Sign up failed. Please try again.'); 
+       toast.warn('Sign up failed. Please try again.', {
+      position: "top-right",
+      autoClose: 2000,
+    });
     }
   };
 

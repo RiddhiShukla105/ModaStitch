@@ -9,12 +9,15 @@ const router=express.Router()
 import jwt from "jsonwebtoken";
 
 const getUserIdFromToken = (req) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) throw new Error("No token provided");
+  const authHeader = req.headers.authorization;
+  if (!authHeader) throw new Error("No token provided");
 
+  const token = authHeader.split(" ")[1];
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  return decoded.id;
+
+  return decoded._id || decoded.userId; // ✅ FIX
 };
+
 
 export const getCart = async (req, res) => {
   try {

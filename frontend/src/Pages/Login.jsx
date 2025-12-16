@@ -1,42 +1,3 @@
-// import React from 'react'
-// import { useState } from 'react'
-
-// const Login = () => {
-//     const[form,setform]=useState({
-//         email:"",
-//         password:""
-//     })
-
-//     const handle=(e)=>{
-//         setform({...form,[e.target.name]:e.target.value})
-//     }
-
-//     const handleSubmit=async(e)=>{
-//         try{
-//             e.preventDefault();
-//             await axios.post("http://localhost:5000/api/user/login",form)
-//             .then((res)=>{
-//                 console.log(res.data)
-//             })
-//         }catch(error){
-//             console.log(error)
-//         }
-//         e.target.reset()
-//     }
-//   return (
-//     <div>
-//      <form action="" onSubmit={handleSubmit}>
-//         <input type="email" name="email" id="" onChange={handle} />
-//         <input type="password" name="password" id="" onChange={handle}/>
-//         <button>Submit</button>
-//      </form> 
-//     </div>
-//   )
-// }
-
-// export default Login
-
-
 import React, { useState } from "react";
 import axios from "axios";
 import Header from "../Components/Header";
@@ -58,41 +19,56 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await axios.post("http://localhost:5000/api/user/login", form);
-  //     console.log(res.data);
-  //     alert("Login successful!");
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     alert("Invalid credentials. Try again.");
-  //   }
-  // };
+ 
+//    const handleSubmit = (event) => {
+//     event.preventDefault();
 
+//     axios
+//       .post("http://localhost:5000/api/user/login", form)
+//       .then((res) => {
+//         if (res.data.token) {
+//           localStorage.setItem("token", res.data.token);
+//           localStorage.setItem("role", res.data.role);
+//           window.dispatchEvent(new Event("login"));
+//         }
+// Swal.fire("Success", res.data.message, "success").then(() => {
+//   if (res.data.role === "admin") navigate("/dashboard", { replace: true });
+//   else navigate("/", { replace: true }); // buyer
+// });
 
+//       })
+//       .catch((err) => {
+//         Swal.fire("Login failed:", err.message, "error");
+//       });
+//   };
 
-   const handleSubmit = (event) => {
-    event.preventDefault();
+const handleSubmit = (event) => {
+  event.preventDefault();
 
-    axios
-      .post("http://localhost:5000/api/user/login", form)
-      .then((res) => {
-        if (res.data.token) {
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("role", res.data.role);
-          window.dispatchEvent(new Event("login"));
-        }
-Swal.fire("Success", res.data.message, "success").then(() => {
-  if (res.data.role === "admin") navigate("/dashboard", { replace: true });
-  else navigate("/", { replace: true }); // buyer
-});
+  axios
+    .post("http://localhost:5000/api/user/login", form)
+    .then((res) => {
+      if (res.data.token) {
+        // Store token and role
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);
 
-      })
-      .catch((err) => {
-        Swal.fire("Login failed:", err.message, "error");
-      });
-  };
+        // Dispatch a custom event to let other components (like Header/Tshirt) know user logged in
+        window.dispatchEvent(new Event("login"));
+
+        Swal.fire("Success", res.data.message, "success").then(() => {
+          if (res.data.role === "admin") navigate("/dashboard", { replace: true });
+          else navigate("/", { replace: true }); // buyer
+        });
+      } else {
+        Swal.fire("Login failed", "Token not received from server", "error");
+      }
+    })
+    .catch((err) => {
+      Swal.fire("Login failed", err.response?.data?.error || err.message, "error");
+    });
+};
+
   return (
     <>
     <Header/>

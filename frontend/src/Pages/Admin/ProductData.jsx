@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
 import axios from "axios";
 import "primeicons/primeicons.css";
 
@@ -10,28 +11,39 @@ const ProductData = () => {
   const [products, setProducts] = useState([]);
   const [visible, setVisible] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [globalFilter, setGlobalFilter] = useState("");
 
-  // Load products
+  // const load = async () => {
+  //   const res = await axios.get("http://localhost:5000/api/product/load-product");
+  //   setProducts(res.data.products || res.data || []);
+  // };
+
   const load = async () => {
-    const res = await axios.get("http://localhost:5000/api/product/load-product");
-    console.log( res.data);
+  const res = await axios.get("http://localhost:5000/api/product/load-product");
 
-    if (Array.isArray(res.data)) setProducts(res.data);
-    else if (Array.isArray(res.data.products)) setProducts(res.data.products);
-    else if (Array.isArray(res.data.product)) setProducts(res.data.product);
-  };
+  let data = [];
+
+  if (Array.isArray(res.data)) {
+    data = res.data;
+  } else if (Array.isArray(res.data.products)) {
+    data = res.data.products;
+  } else if (Array.isArray(res.data.product)) {
+    data = res.data.product;
+  }
+
+  setProducts(data);
+};
+
 
   useEffect(() => {
     load();
   }, []);
 
-  // Open Edit Form
   const editProduct = (rowData) => {
     setEditData({ ...rowData });
     setVisible(true);
   };
 
-  // Delete
   const DeleteProduct = async (rowData) => {
     await axios.delete(
       `http://localhost:5000/api/product/delete-product/${rowData._id}`
@@ -39,7 +51,6 @@ const ProductData = () => {
     load();
   };
 
-  // Update Product
   const updateProduct = async () => {
     await axios.put(
       `http://localhost:5000/api/product/edit-product/${editData._id}`,
@@ -49,172 +60,115 @@ const ProductData = () => {
     load();
   };
 
-  // Handle Input
   const handleInput = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
   };
 
-  // SR.NO Template
-  const srNoTemplate = (rowData, options) => {
-    return options.rowIndex + 1; // Auto numbering
-  };
+  const srNoTemplate = (_, options) => options.rowIndex + 1;
 
-  // IMAGES TEMPLATE (Preview)
-const imageBodyTemplate = (rowData) => {
-  if (!rowData.image || rowData.image.length === 0) {
-    return <span>No Image</span>;
-  }
-
-  const img = rowData.image[0]; // first image
-
-  return (
-    <img
-      src={`http://localhost:5000/uploads/${img}`}
-      alt="product"
-      style={{
-        width: "50px",
-        height: "50px",
-        objectFit: "cover",
-        borderRadius: "6px",
-      }}
-    />
-  );
-};
-
-
-
-  // ACTION BUTTONS
-  const actionBodyTemplate = (rowData) => {
+  const imageBodyTemplate = (rowData) => {
+    if (!rowData.image?.length) return <span className="text-gray-400">No Image</span>;
     return (
-      <>
-        <Button
-          icon="pi pi-pencil"
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          outlined
-          severity="danger"
-          className="ml-2"
-          onClick={() => DeleteProduct(rowData)}
-        />
-      </>
+      <img
+        src={`http://localhost:5000/uploads/${rowData.image[0]}`}
+        className="w-12 h-12 rounded-md object-cover"
+        alt="product"
+      />
     );
   };
 
+  const actionBodyTemplate = (rowData) => (
+    <div className="flex gap-2">
+      <Button
+        icon="pi pi-pencil"
+        className="p-button-rounded p-button-text p-button-info"
+        onClick={() => editProduct(rowData)}
+      />
+      <Button
+        icon="pi pi-trash"
+        className="p-button-rounded p-button-text p-button-danger"
+        onClick={() => DeleteProduct(rowData)}
+      />
+    </div>
+  );
+
   return (
-    <div className="card">
+    <div className="bg-white p-5 rounded-xl shadow-md">
+
+      {/* HEADER */}
+      <div className="flex justify-between items-centermb-4">
+       <h2 className="absolute left-1/2 -translate-x-1/2 text-2xl font-semibold">
+    Product Management
+  </h2>
+
+        <div className="flex gap-2">
+          <InputText
+            placeholder="Search products..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="p-inputtext-sm"
+          />
+          <Button
+            icon="pi pi-refresh"
+            className="p-button-text"
+            onClick={load}
+          />
+        </div>
+      </div>
 
       {/* TABLE */}
-      <DataTable value={products} tableStyle={{ minWidth: "60rem" }}>
-        <Column
-          header="Sr.No"
-          body={srNoTemplate}
-          style={{ width: "7%" }}
-        />
-
-        <Column field="name" header="Name"  style={{ width: "15%" }} />
-
-        <Column field="price" header="Price" sortable style={{ width: "10%" }} />
-
-        <Column field="category" header="Category" sortable style={{ width: "13%" }} />
-
-        <Column field="mqty" header="M Qty" sortable style={{ width: "8%" }} />
-        <Column field="lqty" header="L Qty" sortable style={{ width: "8%" }} />
-        <Column field="xlqty" header="XL Qty" sortable style={{ width: "8%" }} />
-
-        {/* IMAGE PREVIEW */}
-        <Column header="Image" body={imageBodyTemplate} style={{ width: '10%' }} />
-
-        {/* ACTIONS */}
-        <Column
-          header="Action"
-          body={actionBodyTemplate}
-          exportable={false}
-          style={{ width: "16%" }}
-        />
+      <DataTable
+        value={products}
+        paginator
+        rows={8}
+        stripedRows
+        responsiveLayout="scroll"
+        globalFilter={globalFilter}
+        emptyMessage="No products found"
+        className="p-datatable-sm"
+      >
+        <Column header="#" body={srNoTemplate} style={{ width: "60px" }} />
+        <Column field="name" header="Product" sortable />
+        <Column field="price" header="Price ₹" sortable />
+        <Column field="category" header="Category" sortable />
+        <Column field="mqty" header="M" />
+        <Column field="lqty" header="L" />
+        <Column field="xlqty" header="XL" />
+        <Column header="Image" body={imageBodyTemplate} />
+        <Column header="Actions" body={actionBodyTemplate} />
       </DataTable>
 
-      {/* EDIT POPUP */}
+      {/* EDIT DIALOG */}
       <Dialog
         header="Edit Product"
         visible={visible}
-        style={{ width: "30vw" }}
+        style={{ width: "420px" }}
         onHide={() => setVisible(false)}
       >
         {editData && (
-          <div className="p-fluid">
-            <label>Name</label>
-            <input
-              name="name"
-              value={editData.name}
-              onChange={handleInput}
-              className="p-inputtext p-component mb-2"
-            />
+          <div className="flex flex-col gap-3">
+            <InputText name="name" value={editData.name} onChange={handleInput} placeholder="Name" />
+            <InputText name="price" value={editData.price} onChange={handleInput} placeholder="Price" />
+            <InputText name="category" value={editData.category} onChange={handleInput} placeholder="Category" />
 
-            <label>Price</label>
-            <input
-              name="price"
-              value={editData.price}
-              onChange={handleInput}
-              className="p-inputtext p-component mb-2"
-            />
+            <div className="grid grid-cols-3 gap-2">
+              <InputText name="mqty" value={editData.mqty} onChange={handleInput} placeholder="M Qty" />
+              <InputText name="lqty" value={editData.lqty} onChange={handleInput} placeholder="L Qty" />
+              <InputText name="xlqty" value={editData.xlqty} onChange={handleInput} placeholder="XL Qty" />
+            </div>
 
-            <label>Category</label>
-            <input
-              name="category"
-              value={editData.category}
-              onChange={handleInput}
-              className="p-inputtext p-component mb-2"
-            />
-
-            <label>M Qty</label>
-            <input
-              name="mqty"
-              value={editData.mqty}
-              onChange={handleInput}
-              className="p-inputtext p-component mb-2"
-            />
-
-            <label>L Qty</label>
-            <input
-              name="lqty"
-              value={editData.lqty}
-              onChange={handleInput}
-              className="p-inputtext p-component mb-2"
-            />
-
-            <label>XL Qty</label>
-            <input
-              name="xlqty"
-              value={editData.xlqty}
-              onChange={handleInput}
-              className="p-inputtext p-component mb-2"
-            />
-
-            {/* Preview Image Inside Edit Form */}
-            <label>Image Preview</label>
-            {editData.images && editData.images.length > 0 && (
+            {editData.image?.length > 0 && (
               <img
-                src={`http://localhost:5000/uploads/${editData.images[0]}`}
+                src={`http://localhost:5000/uploads/${editData.image[0]}`}
+                className="w-28 rounded-md mt-2"
                 alt="preview"
-                style={{
-                  width: "120px",
-                  marginBottom: "10px",
-                  borderRadius: "5px",
-                }}
               />
             )}
 
-            <Button label="Update" icon="pi pi-check" onClick={updateProduct} />
+            <Button label="Update Product" icon="pi pi-check" onClick={updateProduct} />
           </div>
         )}
       </Dialog>
-
     </div>
   );
 };

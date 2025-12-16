@@ -1,31 +1,35 @@
-import React, { useState, useRef ,useContext} from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import Header from "../../Components/Header";
 import Footer from "../../Components/footer";
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
 import HeartToggle from "./HeartToggle";
-import { WishlistContext } from "../../context/WishlistContext";
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { WishlistContext } from "../../Context/WishlistContext";
+import { CartContext } from "../../Context/CartContext";
 
 const Shirt = () => {
   const { addToWishlist } = useContext(WishlistContext);
-  
-  const products = [
-    { image: "/image/test1.png", title: "Trending", price: "Rs 400" },
-    { image: "/image/test1.png", title: "New Arrivals", price: "Rs 400" },
-    { image: "/image/test1.png", title: "Best Selling", price: "Rs 400" },
-    { image: "/image/test1.png", title: "On Sale", price: "Rs 400" }
-  ];
+  const { addToCart } = useContext(CartContext); // ✅ USE CONTEXT
+  const [productData, setProductData] = useState([]);
+  const navigate = useNavigate();
+  const imageRefs = useRef([]);
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [visible, setVisible] = useState(false);
+  const category = "shirt";
+  // 🔹 Fetch products
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/api/product/load-product?category=${category}`)
+      .then((res) => setProductData(res.data.product))
+      .catch((err) => console.error("Error fetching products:", err));
+  }, []);
 
-  const imageRef = useRef(null);
+  const handleClick = (item) => {
+    navigate(`/tshirt/${item._id}`, { state: item });
+  };
 
-  // ---------- ADD TO CART FLOATING ANIMATION ----------
+  // 🔹 Fly to cart animation (UI only)
   const flyToCart = (imgElement) => {
     const cartIcon = document.getElementById("cart-icon");
-
     if (!cartIcon || !imgElement) return;
 
     const imgRect = imgElement.getBoundingClientRect();
@@ -37,105 +41,84 @@ const Shirt = () => {
     flyingImg.style.top = imgRect.top + "px";
     flyingImg.style.width = imgRect.width + "px";
     flyingImg.style.height = imgRect.height + "px";
-    flyingImg.style.transition =
-      "all 0.9s cubic-bezier(0.25, 0.1, 0.25, 1)";
+    flyingImg.style.transition = "all 0.8s ease-in-out";
     flyingImg.style.zIndex = 9999;
-    flyingImg.style.borderRadius = "12px";
+    flyingImg.style.pointerEvents = "none";
 
     document.body.appendChild(flyingImg);
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       flyingImg.style.left = cartRect.left + "px";
       flyingImg.style.top = cartRect.top + "px";
       flyingImg.style.width = "20px";
       flyingImg.style.height = "20px";
-      flyingImg.style.opacity = "0.5";
-    }, 50);
+      flyingImg.style.opacity = "0.4";
+    });
 
-    setTimeout(() => flyingImg.remove(), 900);
+    flyingImg.addEventListener("transitionend", () => flyingImg.remove());
   };
 
-  // ---------- QUICK VIEW ----------
-  const openQuickView = (product) => {
-    setSelectedProduct(product);
-    setVisible(true);
-  };
+  const truncateText = (text, limit = 25) =>
+    text?.length > limit ? text.slice(0, limit) + "..." : text;
 
   return (
     <>
       <Header />
-        <h1 className="text-4xl font-bold text-center my-9">Latest Collection</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-8 ">
 
-        {products.map((item, index) => (
+      <h1 className="text-4xl font-bold text-center my-9">
+        Latest Collection
+      </h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-8">
+        {productData.map((item, index) => (
           <div
-  key={index}
-  className="relative bg-white shadow-lg rounded-xl p-4 transition-all duration-300 hover:shadow-2xl"
->
-           
+            key={item._id}
+            className="relative bg-[#fafafa] shadow-lg rounded-xl p-4 transition-all hover:shadow-2xl"
+          >
             <img
-              src={item.image}
-              alt={item.title}
-              ref={index === 0 ? imageRef : null}
-              className="rounded-lg w-full h-60 object-cover hover:scale-105 transition-all duration-300 cursor-pointer"
-              onClick={() => openQuickView(item)}
+              src={`http://localhost:5000/uploads/${item.image[0]}`}
+              alt={item.seo}
+              className="rounded-lg w-full h-60 object-scale-down cursor-pointer hover:scale-105 transition"
+              onClick={() => handleClick(item)}
+              ref={(el) => (imageRefs.current[index] = el)}
             />
 
             <div className="flex items-center justify-between mt-3">
-  <h3 className="text-xl font-semibold">{item.title}</h3>
+              <h3 className="text-xl font-semibold">
+                {truncateText(item.name)}
+              </h3>
+              <HeartToggle product={item} />
+            </div>
 
-  <div className="w-6 h-6 flex items-center justify-center cursor-pointer">
-    <HeartToggle product={item} />
-  </div>
-</div>
+            <p className="text-gray-600">${item.price}</p>
 
-<p className="text-gray-600">{item.price}</p>
-
+            {/* ✅ CORRECT ADD TO CART */}
             <button
-              onClick={() => flyToCart(imageRef.current)}
-              className="mt-3 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition-all"
+              onClick={() => {
+                addToCart({
+                  id: item._id,
+                  name: item.name,
+                  image: `http://localhost:5000/uploads/${item.image[0]}`,
+                  price: item.price,
+                  mrp: item.mrp || item.price,
+                  size: "M",
+                });
+                flyToCart(imageRefs.current[index]);
+              }}
+              className="mt-3 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition"
             >
               Add to Cart
             </button>
 
             <button
-              onClick={() => openQuickView(item)}
-              className="mt-3 w-full border border-black py-2 rounded-lg hover:bg-black hover:text-white transition-all"
+              onClick={() => handleClick(item)}
+              className="mt-3 w-full border border-black py-2 rounded-lg hover:bg-black hover:text-white transition"
             >
-              Quick View
+              View
             </button>
           </div>
         ))}
-
       </div>
-
-      {/* ---------- QUICK VIEW MODAL ---------- */}
-      <Dialog
-        header={selectedProduct?.title}
-        visible={visible}
-        style={{ width: "35rem" }}
-        onHide={() => setVisible(false)}
-        breakpoint="768px"
-      >
-        {selectedProduct && (
-          <div className="flex flex-col gap-4">
-            <img
-              src={selectedProduct.image}
-              alt="Quick View"
-              className="rounded-lg w-full h-72 object-cover"
-            />
-
-            <h2 className="text-2xl font-bold">{selectedProduct.title}</h2>
-            <p className="text-gray-600">{selectedProduct.price}</p>
-
-            <Button
-              label="Add to Cart"
-              icon="pi pi-shopping-cart"
-              className="p-button-rounded p-button-dark"
-            />
-          </div>
-        )}
-      </Dialog>
 
       <Footer />
     </>
@@ -143,12 +126,3 @@ const Shirt = () => {
 };
 
 export default Shirt;
-
-
-
-{/* <button
-  onClick={() => addToWishlist(product)}
-  className="text-gray-600 hover:text-red-500"
->
-  ❤️ Add to Wishlist
-</button> */}

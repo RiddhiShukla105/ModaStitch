@@ -57,3 +57,14 @@ export const loginUser=async(req,res)=>{
     return res.status(500).json({ success: false, message: error.message });
 }
 }
+
+export const getUser=async(req,res)=>{
+    try{
+        const rec=await User.find({})
+        return res.status(200).json(rec);
+
+    }catch(error){
+       console.log(error)
+         return res.status(500).json({success:false,message:"Backend Error"}) 
+    }
+}

@@ -24,6 +24,9 @@ app.use('/api/user',user)
 app.use('/api/product',product)
 app.use('/api/cart',cart)
 app.use('/api/order',order)
+app.get('/api/config/paypal',(req,res)=>{
+    res.send(process.env.PAYPAL_CLIENT_ID);
+})
 
 
 
