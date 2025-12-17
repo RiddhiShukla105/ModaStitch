@@ -15,6 +15,8 @@ import Payment from "../Pages/Buyer/Payment";
 import Order from "../Pages/Buyer/Order";
 import OrderTracking from "../Pages/Buyer/OrderTracking";
 import AdminDashboard from "../Pages/Admin/AdminDashboard";
+import { Component } from "react";
+import Search from "../Pages/Buyer/Search"
 
 
 
@@ -35,6 +37,7 @@ const appRoute=[
     {path:"/orderupdate",Component:OrderUpdate,role:"admin"},
     {path:"/payment",Component:Payment},
     {path:"/order",Component:Order},
+    {path:"/search",Component:Search},
     {path:"/ordertracking",Component:OrderTracking,name:"Orders",role:"buyer"}
 ]
 

@@ -11,6 +11,7 @@ import user from './Routes/userRoutes.js'
 import product from './Routes/productRoutes.js'
 import cart from './Routes/cartRoutes.js'
 import order from './Routes/orderRoutes.js'
+import feedback from './Routes/feedbackRoutes.js'
 
 const app=express()
 
@@ -24,8 +25,9 @@ app.use('/api/user',user)
 app.use('/api/product',product)
 app.use('/api/cart',cart)
 app.use('/api/order',order)
+app.use('/api/feedback',feedback)
 app.get('/api/config/paypal',(req,res)=>{
-    res.send(process.env.PAYPAL_CLIENT_ID);
+    res.send(process.env.VITE_PAYPAL_CLIENT_ID);
 })
 
 

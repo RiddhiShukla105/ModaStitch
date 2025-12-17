@@ -107,3 +107,25 @@ export const editProduct=async(req,res)=>{
         return res.status(500).json({success:false,message:"Backend Error"})
     }
 }
+
+export const search=(async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q) {
+      return res.status(200).json({ products: [] });
+    }
+
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: q, $options: "i" } },
+        { category: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } }
+      ]
+    });
+
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ message: "Search failed", error });
+  }
+});

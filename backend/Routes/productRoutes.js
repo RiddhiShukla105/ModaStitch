@@ -1,5 +1,5 @@
 import express from 'express'
-import { createProduct, deleteProduct, editProduct, loadProduct } from '../Controller/productController.js'
+import { createProduct, deleteProduct, editProduct, loadProduct, search } from '../Controller/productController.js'
 import multer from 'multer'
 
 const router=express.Router()
@@ -29,5 +29,6 @@ router.post(
 router.get('/load-product',loadProduct)
 router.delete('/delete-product/:id',deleteProduct)
 router.put('/edit-product/:id',editProduct)
+router.get('/search',search)
 
 export default router;
