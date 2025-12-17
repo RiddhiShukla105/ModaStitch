@@ -13,7 +13,7 @@ const About = () => {
   });
 
   useEffect(() => {
-    const countDownDate = new Date("1 Febuary 2026 00:00:00").getTime();
+    const countDownDate = new Date("1 March 2026 00:00:00").getTime();
 
     const timer = setInterval(() => {
       const now = new Date().getTime();
@@ -48,7 +48,7 @@ const About = () => {
     <Header/>
     <div
       className="w-screen h-screen bg-cover bg-center px-[8%] relative"
-      style={{ backgroundImage: "url('/image/background.png')" }}
+      style={{ backgroundImage: "url('/image/blackfriday.jpg')" }}
     >
      
       {/* Content */}
@@ -70,18 +70,13 @@ const About = () => {
         </div>
 
         {/* Button */}
-        <button className="mt-8 border-2 border-white px-6 py-3 flex items-center gap-2 hover:bg-white hover:text-black transition">
+       {/**  <button className="mt-8 border-2 border-white px-6 py-3 flex items-center gap-2 hover:bg-white hover:text-black transition">
           <Link to="/">Learn More</Link>
           <img src="/image/triangle.png" alt="arrow" className="w-4" />
         </button>
-      </div>
+        */}
 
-      {/* Rocket */}
-      <img
-        src="/image/rocket.png"
-        alt="rocket"
-        className="w-[250px] absolute right-[10%] bottom-0 animate-rocket"
-      />
+      </div>
     </div>
     </>
   );
