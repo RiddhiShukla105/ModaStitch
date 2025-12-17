@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineSearch, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineUser, AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
+import { AiOutlineLogout } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -108,7 +109,7 @@ const handleSearch = () => {
                 <AiOutlineShoppingCart size={22} id="cart-icon" className="hover:text-gray-700 transition" />
               </Link>
 
-              <AiOutlineUser size={22} onClick={handleLogout} className="cursor-pointer hover:text-gray-700 transition" />
+              <AiOutlineLogout size={22} onClick={handleLogout} className="cursor-pointer hover:text-gray-700 transition" />
             </>
           ) : (
             <Link to="/sign">
