@@ -13,6 +13,7 @@ import { CartContext } from "../../Context/CartContext";
 const Item = () => {
   const location = useLocation();
   const { id } = useParams();
+   const token = localStorage.getItem("token");
 
   const initialProduct = location.state || null;
 
@@ -39,6 +40,8 @@ const Item = () => {
     }
   }, [id, product]);
 
+  
+
   if (!product)
     return (
       <p className="text-center mt-20 text-xl">Loading product...</p>
@@ -52,25 +55,82 @@ const Item = () => {
 
     const navigate = useNavigate();
 
+// const handleAddToCart = async () => {
+//   if (!selectedSize) {
+//     toast.info("Please select a size",{
+//       position:"top-right",
+//       autoClose:2000
+//     })
+//     return;
+//   }
+
+//   await addToCart({
+//     id: product._id,
+//     name: product.name,
+//     price: product.price,
+//     size: selectedSize,
+//      image: `${import.meta.env.VITE_API_URL}/uploads/${product.image?.[0]}`,
+//   });
+
+
+//   toast.success("Added to cart!", {
+//     position: "top-right",
+//     autoClose: 1500,
+//   });
+
+//   setTimeout(() => {
+//     navigate("/cart");
+//   }, 1500);
+// };
+
+
+
 const handleAddToCart = async () => {
+  // 1️⃣ Size check
   if (!selectedSize) {
-    toast.info("Please select a size",{
-      position:top-right,
-      autoClose:2000
-    })
+    toast.info("Please select a size", {
+      position: "top-right",
+      autoClose: 2000,
+    });
     return;
   }
 
+  // 2️⃣ Login check
+  if (!token) {
+    toast.warn("Please login to add items to cart", {
+      position: "top-right",
+      autoClose: 2000,
+    });
+
+    setTimeout(() => {
+      navigate("/login", {
+        state: { from: `/product/${id}` },
+      });
+    }, 2000);
+
+    return; // ⛔ STOP
+  }
+
+  // 3️⃣ Add to cart
   await addToCart({
     id: product._id,
     name: product.name,
     price: product.price,
     size: selectedSize,
-     image: `${import.meta.env.VITE_API_URL}/uploads/${product.image?.[0]}`,
+    image: `${import.meta.env.VITE_API_URL}/uploads/${product.image?.[0]}`,
   });
 
-  navigate("/cart"); // ✅ navigate ONLY after cart updates
+  // 4️⃣ Success
+  toast.success("Added to cart!", {
+    position: "top-right",
+    autoClose: 1500,
+  });
+
+  setTimeout(() => {
+    navigate("/cart");
+  }, 1500);
 };
+
 
 
   return (

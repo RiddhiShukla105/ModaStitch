@@ -1,6 +1,8 @@
 
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const CartContext = createContext();
 
@@ -34,7 +36,11 @@ export const CartProvider = ({ children }) => {
   const addToCart = async ({ id, name, image, price, size }) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login first");
+      // alert("Please login first");
+      toast.warn("Please login first",{
+        position:"top-right",
+        autoClose:2000
+      })
       return;
     }
 

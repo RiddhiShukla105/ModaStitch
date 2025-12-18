@@ -39,8 +39,9 @@ const MainPage = () => {
   }, []);
 
   const handleClick = (item) => {
-    navigate(`/tshirt/${item._id}`, { state: item });
-  };
+  const productId = item._id || item.id;
+  navigate(`/tshirt/${productId}`, { state: item });
+};
 
   const flyToCart = (index, item, type) => {
     const refs = type === "tshirt" ? tshirtRefs.current : shirtRefs.current;
@@ -114,7 +115,7 @@ const truncateText = (text, limit = 16) =>
       <Header />
 
       {/* HERO SECTION */}
-      <section
+      {/* <section
         className="relative h-[80vh] w-full my-8 rounded overflow-hidden bg-[url('/image/home-bg2.png')] bg-cover bg-center"
       >
         <div className="absolute inset-0 bg-linear-to-r from-black/60 via-black/30 to-transparent"></div>
@@ -129,7 +130,30 @@ const truncateText = (text, limit = 16) =>
             Shop Now
           </button>
         </div>
-      </section>
+      </section> */}
+
+
+        <section
+  className="relative w-full my-8 rounded overflow-hidden
+             h-[60vh] sm:h-[80vh] 
+             bg-[url('/image/home-bg2.png')] 
+             bg-cover bg-center"
+>
+  <div className="absolute inset-0 bg-linear-to-r from-black/60 via-black/30 to-transparent"></div>
+  <div className="relative h-full flex flex-col justify-center pl-6 sm:pl-16 text-white max-w-xl">
+    <h1 className="text-3xl sm:text-5xl font-extrabold leading-tight drop-shadow-xl">
+      Redefine Your Style <br /> With Modern Fashion
+    </h1>
+    <p className="mt-4 text-lg sm:text-xl font-light text-gray-200">
+      Discover premium shirts, t-shirts, and exclusive collections crafted for comfort & style.
+    </p>
+    <button className="mt-6 inline-block bg-white text-black font-semibold px-6 py-3 text-lg rounded-full shadow-lg hover:bg-black hover:text-white transition-all duration-300 hover:scale-105">
+      Shop Now
+    </button>
+  </div>
+</section>
+
+
 
       {/* TRENDING CATEGORIES */}
       <section className="px-4 sm:px-10 mt-12">
@@ -142,7 +166,7 @@ const truncateText = (text, limit = 16) =>
               key={index}
               className="shadow-md transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border border-gray-100 rounded-xl"
             >
-              <div className="flex flex-col items-center h-50">
+              <div className="w-full h-48 sm:h-56 overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
@@ -278,12 +302,12 @@ const truncateText = (text, limit = 16) =>
 
 
             {/* DEAL OF THE DAY */}
-<section className="px-4 sm:px-10 mt-20 mb-20">
+{/* <section className="px-4 sm:px-10 mt-20 mb-20">
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
     <h2 className="text-3xl font-bold text-gray-900">Deal of the Day</h2>
   </div>
   <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
-    {/* Product Image */}
+    
     <div className="w-full h-56 sm:h-80 rounded-xl overflow-hidden">
       <img
         src="/image/test1.png"
@@ -291,7 +315,7 @@ const truncateText = (text, limit = 16) =>
         className="w-full h-full object-cover transition duration-300 hover:scale-105"
       />
     </div>
-    {/* Product Info */}
+   
     <div className="flex flex-col justify-center">
       <h3 className="text-3xl font-bold text-gray-900 leading-tight">
         Premium Cotton Oversized T-Shirt
@@ -299,13 +323,13 @@ const truncateText = (text, limit = 16) =>
       <p className="text-gray-600 mt-3 text-lg">
         Soft, breathable fabric designed for everyday comfort and a relaxed aesthetic. Available in multiple modern shades.
       </p>
-      {/* Price Block */}
+   
       <div className="mt-5 flex items-end gap-4">
         <span className="text-4xl font-extrabold text-green-600">$24</span>
         <span className="text-lg line-through text-gray-400">$29</span>
         <span className="text-lg font-semibold text-red-600">10% OFF</span>
       </div>
-      {/* Buttons */}
+   
       <div className="flex items-center gap-4 mt-6">
         <button
           onClick={() =>
@@ -323,6 +347,18 @@ const truncateText = (text, limit = 16) =>
           Add to Cart
         </button>
         <button
+        onClick={() =>
+  navigate("/tshirt/deal-id", {
+    state: {
+      _id: "deal-id",
+      name: "Premium Cotton Oversized T-Shirt",
+      image: [`${window.location.origin}/image/test1.png`],
+      price: 24,
+      mrp: 29,
+      desc: ["Soft premium cotton oversized fit."],
+    },
+  })
+}
           className="px-6 py-3 border border-gray-500 text-lg rounded-xl hover:bg-gray-100 transition"
         >
           View Details
@@ -330,7 +366,7 @@ const truncateText = (text, limit = 16) =>
       </div>
     </div>
   </div>
-</section>
+</section> */}
 
 {/* TESTIMONIALS SECTION */}
 <section className="px-4 sm:px-10 mt-20 mb-20">
