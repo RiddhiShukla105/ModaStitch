@@ -4,8 +4,8 @@ import Header from "../../Components/Header";
 import { useLocation, useParams,Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useContext } from "react";
 import { CartContext } from "../../Context/CartContext";
 
@@ -29,11 +29,11 @@ const Item = () => {
   useEffect(() => {
     if (!product) {
       axios
-        .get(`http://localhost:5000/api/product/${id}`)
+        .get(`${import.meta.env.VITE_API_URL}/api/product/${id}`)
         .then((res) => {
           const p = res.data.product;
           setProduct(p);
-          setActiveImg(`http://localhost:5000/uploads/${p.image?.[0]}`);
+          setActiveImg(`${import.meta.env.VITE_API_URL}/uploads/${p.image?.[0]}`);
         })
         .catch((err) => console.error("Error fetching product:", err));
     }
@@ -52,28 +52,12 @@ const Item = () => {
 
     const navigate = useNavigate();
 
-// const handleAddToCart = () => {
-//   if (!selectedSize) {
-//     alert("Please select a size");
-//     return;
-//   }
-
-//   navigate("/cart", {
-//     state: {
-//       id: product._id,
-//       name: product.name,
-//       price: product.price,
-//       // mrp: product.price + 200, 
-//       size: selectedSize,
-//       qty: 1,
-//       image: `http://localhost:5000/uploads/${product.image?.[0]}`,
-//     },
-//   });
-// };
-
 const handleAddToCart = async () => {
   if (!selectedSize) {
-    alert("Please select a size");
+    toast.info("Please select a size",{
+      position:top-right,
+      autoClose:2000
+    })
     return;
   }
 
@@ -82,7 +66,7 @@ const handleAddToCart = async () => {
     name: product.name,
     price: product.price,
     size: selectedSize,
-     image: `http://localhost:5000/uploads/${product.image?.[0]}`,
+     image: `${import.meta.env.VITE_API_URL}/uploads/${product.image?.[0]}`,
   });
 
   navigate("/cart"); // ✅ navigate ONLY after cart updates
@@ -115,7 +99,7 @@ const handleAddToCart = async () => {
               src={
                 activeImg.startsWith("http")
                   ? activeImg
-                  : `http://localhost:5000/uploads/${activeImg}`
+                  : `${import.meta.env.VITE_API_URL}/uploads/${activeImg}`
               }
               alt="product"
               className="w-full h-full object-cover rounded-2xl"
@@ -128,7 +112,7 @@ const handleAddToCart = async () => {
                   backgroundImage: `url(${
                     activeImg.startsWith("http")
                       ? activeImg
-                      : `http://localhost:5000/uploads/${activeImg}`
+                      : `${import.meta.env.VITE_API_URL}/uploads/${activeImg}`
                   })`,
                   backgroundSize: "200%",
                   backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
@@ -142,7 +126,7 @@ const handleAddToCart = async () => {
             {product.image?.map((img, i) => (
               <img
                 key={i}
-                src={`http://localhost:5000/uploads/${img}`}
+                src={`${import.meta.env.VITE_API_URL}/uploads/${img}`}
                 className={`h-20 w-20 rounded-xl shadow-md cursor-pointer object-cover transition-all
                   ${
                     activeImg.includes(img)
@@ -150,7 +134,7 @@ const handleAddToCart = async () => {
                       : "ring-1 ring-gray-300"
                   }`}
                 onClick={() =>
-                  setActiveImg(`http://localhost:5000/uploads/${img}`)
+                  setActiveImg(`${import.meta.env.VITE_API_URL}/uploads/${img}`)
                 }
               />
             ))}

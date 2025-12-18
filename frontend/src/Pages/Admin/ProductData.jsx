@@ -19,7 +19,7 @@ const ProductData = () => {
   // };
 
   const load = async () => {
-  const res = await axios.get("http://localhost:5000/api/product/load-product");
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/product/load-product`);
 
   let data = [];
 
@@ -46,14 +46,14 @@ const ProductData = () => {
 
   const DeleteProduct = async (rowData) => {
     await axios.delete(
-      `http://localhost:5000/api/product/delete-product/${rowData._id}`
+      `${import.meta.env.VITE_API_URL}/api/product/delete-product/${rowData._id}`
     );
     load();
   };
 
   const updateProduct = async () => {
     await axios.put(
-      `http://localhost:5000/api/product/edit-product/${editData._id}`,
+      `${import.meta.env.VITE_API_URL}/api/product/edit-product/${editData._id}`,
       editData
     );
     setVisible(false);
@@ -70,7 +70,7 @@ const ProductData = () => {
     if (!rowData.image?.length) return <span className="text-gray-400">No Image</span>;
     return (
       <img
-        src={`http://localhost:5000/uploads/${rowData.image[0]}`}
+        src={`${import.meta.env.VITE_API_URL}/uploads/${rowData.image[0]}`}
         className="w-12 h-12 rounded-md object-cover"
         alt="product"
       />
@@ -159,7 +159,7 @@ const ProductData = () => {
 
             {editData.image?.length > 0 && (
               <img
-                src={`http://localhost:5000/uploads/${editData.image[0]}`}
+                src={`${import.meta.env.VITE_API_URL}/uploads/${editData.image[0]}`}
                 className="w-28 rounded-md mt-2"
                 alt="preview"
               />

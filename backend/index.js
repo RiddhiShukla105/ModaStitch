@@ -15,7 +15,17 @@ import feedback from './Routes/feedbackRoutes.js'
 
 const app=express()
 
-app.use(cors())
+// app.use(cors())
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",      // Vite dev
+    "http://localhost:3000",      // React dev
+    "https://https://modastitch.com/"   // Hostinger domain
+  ],
+  credentials: true
+}));
+
 app.use(express.json())
 app.use('/uploads', express.static('uploads'));
 

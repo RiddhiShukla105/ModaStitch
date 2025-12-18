@@ -19,34 +19,11 @@ const Login = () => {
 
   const navigate = useNavigate();
 
- 
-//    const handleSubmit = (event) => {
-//     event.preventDefault();
-
-//     axios
-//       .post("http://localhost:5000/api/user/login", form)
-//       .then((res) => {
-//         if (res.data.token) {
-//           localStorage.setItem("token", res.data.token);
-//           localStorage.setItem("role", res.data.role);
-//           window.dispatchEvent(new Event("login"));
-//         }
-// Swal.fire("Success", res.data.message, "success").then(() => {
-//   if (res.data.role === "admin") navigate("/dashboard", { replace: true });
-//   else navigate("/", { replace: true }); // buyer
-// });
-
-//       })
-//       .catch((err) => {
-//         Swal.fire("Login failed:", err.message, "error");
-//       });
-//   };
-
 const handleSubmit = (event) => {
   event.preventDefault();
 
   axios
-    .post("http://localhost:5000/api/user/login", form)
+    .post(`${import.meta.env.VITE_API_URL}/api/user/login`, form)
     .then((res) => {
       if (res.data.token) {
         // Store token and role

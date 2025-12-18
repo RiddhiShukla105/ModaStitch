@@ -76,14 +76,14 @@ const navigate = useNavigate();
                   <div className="mt-4 flex items-center gap-3">
                     <button
                      onClick={() => updateQty(item.id, item.size, -1)}
-                      className="border w-7 h-7 rounded flex items-center justify-center"
+                      className="border w-7 h-7 rounded flex items-center justify-center cursor-pointer"
                     >
                       –
                     </button>
                     <span>{item.qty}</span>
                     <button
                       onClick={() => updateQty(item.id, item.size, 1)}
-                      className="border w-7 h-7 rounded flex items-center justify-center"
+                      className="border w-7 h-7 rounded flex items-center justify-center cursor-pointer"
                     >
                       +
                     </button>
@@ -93,13 +93,13 @@ const navigate = useNavigate();
                   <div className="mt-4 flex gap-6 text-sm font-semibold">
                     <button
                       onClick={() => removeItem(item.id, item.size)}
-                      className="text-gray-700 hover:text-black"
+                      className="text-white bg-black p-2 rounded hover:text-red-500 cursor-pointer"
                     >
                       REMOVE
                     </button>
-                    <button className="text-gray-700 hover:text-black">
+                    {/* <button className="text-gray-700 hover:text-black">
                       MOVE TO WISHLIST
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -135,7 +135,7 @@ const navigate = useNavigate();
 
             <button
   onClick={() => navigate("/order")}
-  className="w-full bg-pink-600 mt-6 text-white py-3 rounded-lg text-lg font-semibold hover:bg-pink-700 transition"
+  className="w-full bg-pink-600 mt-6 text-white py-3 rounded-lg text-lg font-semibold hover:bg-pink-700 transition cursor-pointer"
 >
   PLACE ORDER
 </button>

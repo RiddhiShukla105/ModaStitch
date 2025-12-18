@@ -131,51 +131,92 @@ const handleSearch = () => {
       </div>
 
       {/* MOBILE MENU */}
-      {mobileMenuOpen && (
-        <div className="sm:hidden fixed inset-0 bg-black bg-opacity-50 z-40">
-          <div className="absolute top-0 right-0 w-3/4 max-w-xs h-full bg-white shadow-lg p-6 flex flex-col">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="font-bold text-xl">Menu</h2>
-              <AiOutlineClose size={28} className="cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
-            </div>
 
-            {/* NAV LINKS */}
-            <div className="flex flex-col gap-4 mb-6">
-              {filteredRoutes.map((item, id) => (
-                <Link
-                  key={id}
-                  to={item.path}
-                  className="font-medium text-gray-800 hover:text-pink-600"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
+     {mobileMenuOpen && (
+  <div className="sm:hidden fixed inset-0 z-40">
+    {/* Overlay */}
+    <div
+      className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+      onClick={() => setMobileMenuOpen(false)}
+    />
 
-            {/* ACTIONS */}
-            <div className="flex items-center gap-4">
-              {isLoggedIn ? (
-                <>
-                  <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)}>
-                    <AiOutlineHeart size={22} className="hover:text-gray-700 transition" />
-                  </Link>
+    {/* Drawer */}
+    <div className="absolute top-0 right-0 h-full w-[80%] max-w-sm bg-white shadow-2xl flex flex-col animate-slideIn">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b">
+        <h2 className="text-lg font-semibold tracking-wide">Menu</h2>
+        <AiOutlineClose
+          size={26}
+          className="cursor-pointer text-gray-600 hover:text-black transition"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      </div>
 
-                  <Link to="/cart" id="cart-icon" onClick={() => setMobileMenuOpen(false)}>
-                    <AiOutlineShoppingCart size={22} className="hover:text-gray-700 transition" />
-                  </Link>
+      {/* Nav Links */}
+      <div className="flex-1 px-6 py-6 space-y-4">
+        {filteredRoutes.map((item, id) => (
+          <Link
+            key={id}
+            to={item.path}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-base font-medium text-gray-800
+                       px-3 py-2 rounded-lg
+                       hover:bg-pink-50 hover:text-pink-600
+                       transition"
+          >
+            {item.name}
+          </Link>
+        ))}
+      </div>
 
-                  <AiOutlineUser size={22} onClick={handleLogout} className="cursor-pointer hover:text-gray-700 transition" />
-                </>
-              ) : (
-                <Link to="/sign" onClick={() => setMobileMenuOpen(false)}>
-                  <FaUser size={22} className="text-black hover:text-gray-700 transition" />
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Divider */}
+      <div className="border-t" />
+
+      {/* Actions */}
+      <div className="px-6 py-4 flex items-center justify-between">
+        {isLoggedIn ? (
+          <>
+            <Link
+              to="/wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 rounded-full hover:bg-gray-100 transition"
+            >
+              <AiOutlineHeart size={22} />
+            </Link>
+
+            <Link
+              to="/cart"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 rounded-full hover:bg-gray-100 transition"
+            >
+              <AiOutlineShoppingCart size={22} />
+            </Link>
+
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-full hover:bg-gray-100 transition"
+            >
+              <AiOutlineUser size={22} />
+            </button>
+          </>
+        ) : (
+          <Link
+            to="/sign"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 text-sm font-medium
+                       px-4 py-2 rounded-lg border
+                       hover:bg-gray-50 transition"
+          >
+            <FaUser size={18} />
+            Sign In
+          </Link>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
 
       <ToastContainer />
     </header>
@@ -183,3 +224,6 @@ const handleSearch = () => {
 };
 
 export default Header;
+
+
+

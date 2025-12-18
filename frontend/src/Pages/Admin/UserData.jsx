@@ -12,7 +12,7 @@ const UserData = () => {
   }, []);
 
   const fetchdata = async () => {
-    const res = await axios.get("http://localhost:5000/api/user/getdata");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/getdata`);
     setUserdata(res.data);
   };
 
@@ -65,7 +65,7 @@ const UserData = () => {
                   {item.email}
                 </p>
                 <p className="text-sm text-gray-500">
-                  📞 {item.phone || 'Not Provided'}
+                   {item.phone || 'Not Provided'}
                 </p>
 
                 <span

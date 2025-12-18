@@ -3,6 +3,8 @@ import Header from "../../Components/Header";
 import { CartContext } from "../../Context/CartContext";
 import axios from "axios";
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Order = () => {
   const { cartItems, setCartItems } = useContext(CartContext);
@@ -40,7 +42,7 @@ const Order = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        "http://localhost:5000/api/order/user-order",
+        `${import.meta.env.VITE_API_URL}/api/order/user-order`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,19 +63,28 @@ const Order = () => {
   const placeOrder = async (e,method = paymentMethod) => {
     e.target.preventDefault();
     if (!userDetails.name || !userDetails.email || !userDetails.phone || !userDetails.address) {
-      alert("Please fill all required fields!");
+      toast.warn("Please fill all required fields!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
       return;
     }
 
     if (cartItems.length === 0) {
-      alert("Cart is empty!");
+      toast.warn("Cart is empty!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
       return;
     }
 
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login again!");
+        toast.warn("Please login again!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
         return;
       }
 
@@ -93,7 +104,7 @@ const Order = () => {
       };
 
       await axios.post(
-        "http://localhost:5000/api/order/create-order",
+        `${import.meta.env.VITE_API_URL}/api/order/create-order`,
         orderData,
         {
           headers: {
@@ -102,13 +113,20 @@ const Order = () => {
         }
       );
 
-      alert("Order placed successfully!");
+      toast.success("Order placed successfully!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
       setCartItems([]);
       fetchOrders();
 
     } catch (err) {
       console.error("Place Order Error:", err.response?.data || err.message);
-      alert("Failed to place order!");
+      toast.error("Failed to place order!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
+      
     }
   };
 
@@ -133,7 +151,7 @@ const Order = () => {
               <textarea name="address" placeholder="Address" value={userDetails.address} onChange={handleChange} className="border p-2 rounded"/>
               <input name="city" placeholder="City" value={userDetails.city} onChange={handleChange} className="border p-2 rounded"/>
               <input name="state" placeholder="State" value={userDetails.state} onChange={handleChange} className="border p-2 rounded"/>
-              <input name="pincode" placeholder="Pincode" value={userDetails.pincode} onChange={handleChange} className="border p-2 rounded"/>
+              <input name="pincode" placeholder="Zipcode" value={userDetails.pincode} onChange={handleChange} className="border p-2 rounded"/>
             </div>
 
             {/* PAYMENT METHOD */}
@@ -187,7 +205,7 @@ const Order = () => {
 
                     return axios
                       .post(
-                        "http://localhost:5000/api/order/paypal/create",
+                        `${import.meta.env.VITE_API_URL}/api/order/paypal/create`,
                         { amount: totalPrice }, // ✅ FIXED
                         {
                           headers: {
@@ -203,7 +221,7 @@ const Order = () => {
 
     // 1️⃣ VERIFY PAYMENT FIRST
     await axios.post(
-      "http://localhost:5000/api/order/paypal/verify",
+      `${import.meta.env.VITE_API_URL}/api/order/paypal/verify`,
       {
         paypalOrderId: data.orderID,
         products: cartItems.map((item) => ({
@@ -225,14 +243,20 @@ const Order = () => {
     );
 
     // 2️⃣ IMMEDIATELY RESOLVE PAYPAL FLOW
-    alert("Payment successful!");
+    toast.success("Payment successful!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
     setCartItems([]);
     setUserDetails(emptyUserDetails); 
     fetchOrders();
 
   } catch (err) {
     console.error("PayPal verify failed:", err.response?.data || err.message);
-    alert("Payment verification failed!");
+    toast.error("Payment verification failed!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
   }
 }}
 

@@ -18,7 +18,7 @@ const Search = () => {
     setLoading(true);
 
     axios
-      .get(`http://localhost:5000/api/product/search?q=${query}`)
+      .get(`${import.meta.env.VITE_API_URL}/api/product/search?q=${query}`)
       .then((res) => {
         setProducts(res.data.products);
         setLoading(false);
@@ -56,7 +56,7 @@ const Search = () => {
             className="border rounded-xl shadow hover:shadow-lg transition p-4"
           >
             <img
-              src={`http://localhost:5000/uploads/${item.image[0]}`}
+              src={`${import.meta.env.VITE_API_URL}/uploads/${item.image[0]}`}
               alt={item.name}
               className="w-full h-56 object-cover rounded-lg"
             />

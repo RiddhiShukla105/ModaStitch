@@ -39,7 +39,7 @@ const Signup = () => {
     return;
   }
 
-      const res = await axios.post("http://localhost:5000/api/user/create", form);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/user/create`, form);
 
       // console.log(res.data);
       toast.success('Sign up successful!', {

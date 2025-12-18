@@ -5,6 +5,8 @@ import Footer from "../../Components/footer";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../Context/CartContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MainPage = () => {
   const trending = [
@@ -26,12 +28,12 @@ const MainPage = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/product/load-product?limit=5")
+      .get(`${import.meta.env.VITE_API_URL}/api/product/load-product?limit=5`)
       .then((res) => setProduct(res.data.product.slice(0, 4)))
       .catch((err) => console.error("Error fetching products:", err));
 
     axios
-      .get("http://localhost:5000/api/product/load-product?category=shirt")
+      .get(`${import.meta.env.VITE_API_URL}/api/product/load-product?category=shirt`)
       .then((res) => setShirt(res.data.product.slice(0, 4)))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
@@ -82,7 +84,7 @@ const MainPage = () => {
   e.preventDefault();
 
   try {
-    await axios.post("http://localhost:5000/api/feedback/feed", form);
+    await axios.post(`${import.meta.env.VITE_API_URL}/api/feedback/feed`, form);
 
     // reset form correctly
     setForm({
@@ -90,14 +92,22 @@ const MainPage = () => {
       email: "",
       feedback: "",
     });
-
-    alert("Feedback submitted successfully!");
+    toast.success("Feedback submitted successfully!!",{
+      position:"top-right",
+      autoClose:2000
+    })
   } catch (error) {
     console.error("Feedback error:", error);
-    alert("Something went wrong. Please try again.");
+    toast.warn("Something went wrong. Please try again.", {
+      position: "top-right",
+      autoClose: 2000,
+    });
   }
 };
 
+
+const truncateText = (text, limit = 16) =>
+    text?.length > limit ? text.slice(0, limit) + "..." : text;
 
   return (
     <div>
@@ -158,7 +168,7 @@ const MainPage = () => {
             >
               <div className="w-full h-48 overflow-hidden">
                 <img
-                  src={`http://localhost:5000/uploads/${item.image[0]}`}
+                  src={`${import.meta.env.VITE_API_URL}/uploads/${item.image[0]}`}
                   alt={item.seo}
                   className="rounded-lg w-full h-60 object-scale-down cursor-pointer hover:scale-105 transition"
                   onClick={() => handleClick(item)}
@@ -166,7 +176,7 @@ const MainPage = () => {
                 />
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{truncateText(item.name)}</h3>
                 <p className="text-xl font-bold text-green-600 mt-2">${item.price}</p>
                 <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-2">
                   <button
@@ -174,7 +184,7 @@ const MainPage = () => {
                       flyToCart(index, {
                         id: item._id,
                         name: item.name,
-                        image: `http://localhost:5000/uploads/${item.image[0]}`,
+                        image: `${import.meta.env.VITE_API_URL}/uploads/${item.image[0]}`,
                         price: item.price,
                         mrp: item.mrp || item.price,
                         size: "M",
@@ -215,7 +225,7 @@ const MainPage = () => {
             >
               <div className="w-full h-48 overflow-hidden">
                 <img
-                  src={`http://localhost:5000/uploads/${item.image[0]}`}
+                  src={`${import.meta.env.VITE_API_URL}/uploads/${item.image[0]}`}
                   alt={item.seo}
                   className="rounded-lg w-full h-60 object-scale-down cursor-pointer hover:scale-105 transition"
                   onClick={() => handleClick(item)}
@@ -224,7 +234,7 @@ const MainPage = () => {
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  {item.name.length > 60 ? item.name.slice(0, 60) + "…" : item.name}
+                  {truncateText(item.name)}
                 </h3>
                 <p className="text-xl font-bold text-green-600 mt-2">${item.price}</p>
                 <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-2">
@@ -233,7 +243,7 @@ const MainPage = () => {
                       flyToCart(index, {
                         id: item._id,
                         name: item.name,
-                        image: `http://localhost:5000/uploads/${item.image[0]}`,
+                        image: `${import.meta.env.VITE_API_URL}/uploads/${item.image[0]}`,
                         price: item.price,
                         mrp: item.mrp || item.price,
                         size: "M",

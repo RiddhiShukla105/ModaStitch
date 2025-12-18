@@ -26,7 +26,7 @@ const OrderTracking = () => {
     const token = localStorage.getItem("token");
 
     const res = await axios.get(
-      "http://localhost:5000/api/order/user-order",
+      `${import.meta.env.VITE_API_URL}/api/order/user-order`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ const OrderTracking = () => {
       }
     );
 
-    console.log("Fetched orders:", res.data); // check structure
+    // console.log("Fetched orders:", res.data); // check structure
 
     setOrder(Array.isArray(res.data.orders) ? res.data.orders : []); // ✅ use `orders`
   } catch (err) {

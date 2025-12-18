@@ -30,6 +30,7 @@ export const createOrder = async (req, res) => {
       pincode,
       paymentMethod,
       totalAmount,
+      paypalTransactionId
     } = req.body;
 
     if (!products || products.length === 0) {
@@ -49,6 +50,7 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
       totalAmount,
+      paypalTransactionId
     });
 
     await newOrder.save();

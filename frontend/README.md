@@ -17,12 +17,6 @@ If you are developing a production application, we recommend using TypeScript wi
 
 
 
-Moda-> Moda@1947
-
-modastitch63_db_user-> Iwt2YRT3N9qeYa9x
-
-Mongo_URL->  mongodb+srv://modastitch63_db_user:Iwt2YRT3N9qeYa9x@cluster0.kc7vaxl.mongodb.net/?appName=Cluster0
-
 
 
 

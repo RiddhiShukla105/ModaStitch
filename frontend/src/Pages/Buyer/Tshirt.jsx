@@ -9,7 +9,7 @@ import { CartContext } from "../../Context/CartContext";
 
 const Tshirt = () => {
   const { addToWishlist } = useContext(WishlistContext);
-  const { addToCart } = useContext(CartContext); // ✅ USE CONTEXT
+  const { addToCart } = useContext(CartContext); 
   const [productData, setProductData] = useState([]);
   const navigate = useNavigate();
   const imageRefs = useRef([]);
@@ -19,7 +19,7 @@ const Tshirt = () => {
   // 🔹 Fetch products
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/product/load-product?category=${category}`)
+      .get(`${import.meta.env.VITE_API_URL}/api/product/load-product?category=${category}`)
       .then((res) => setProductData(res.data.product))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
@@ -77,7 +77,7 @@ const Tshirt = () => {
             className="relative bg-[#fafafa] shadow-lg rounded-xl p-4 transition-all hover:shadow-2xl"
           >
             <img
-              src={`http://localhost:5000/uploads/${item.image[0]}`}
+              src={`${import.meta.env.VITE_API_URL}/uploads/${item.image[0]}`}
               alt={item.seo}
               className="rounded-lg w-full h-60 object-scale-down cursor-pointer hover:scale-105 transition"
               onClick={() => handleClick(item)}
@@ -99,7 +99,7 @@ const Tshirt = () => {
                 addToCart({
                   id: item._id,
                   name: item.name,
-                  image: `http://localhost:5000/uploads/${item.image[0]}`,
+                  image: `${import.meta.env.VITE_API_URL}/uploads/${item.image[0]}`,
                   price: item.price,
                   mrp: item.mrp || item.price,
                   size: "M",

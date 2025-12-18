@@ -17,28 +17,158 @@ import OrderTracking from "../Pages/Buyer/OrderTracking";
 import AdminDashboard from "../Pages/Admin/AdminDashboard";
 import { Component } from "react";
 import Search from "../Pages/Buyer/Search"
+import ProtectedRoute from "./ProtectedRoute";
 
 
 
-const appRoute=[
-    {path:"/",Component:MainPage,name:"Home",role:"buyer"},
-    {path:"/about",Component:About,name:"About",role:"buyer"},
-    {path:"/tshirt",Component:Tshirt,name:"T-shirt",role:"buyer"},
-    {path:"/shirt",Component:Shirt,name:"Shirt",role:"buyer"},
-    {path:"/admin",Component:Admin,role:"admin"},
-    {path:"/dashboard",Component:AdminDashboard,name:"Dashboard",role:"admin"},
-    {path:"/cart",Component:Cart},
-    {path:"/wishlist",Component:Wishlist},
-    {path:"/tshirt/:id",Component:Item},
-    {path:"/login",Component:Login},
-    {path:"/sign",Component:Signup},
-    {path:"/product",Component:ProductData,role:"admin"},
-    {path:"/userdata",Component:UserData,role:"admin"},
-    {path:"/orderupdate",Component:OrderUpdate,role:"admin"},
-    {path:"/payment",Component:Payment},
-    {path:"/order",Component:Order},
-    {path:"/search",Component:Search},
-    {path:"/ordertracking",Component:OrderTracking,name:"Orders",role:"buyer"}
-]
 
-export default appRoute
+const appRoute = [
+  {
+    path: "/",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <MainPage />
+      </ProtectedRoute>
+    ),
+    name: "Home",
+  },
+  {
+    path: "/about",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <About />
+      </ProtectedRoute>
+    ),
+    name: "About",
+   
+  },
+  {
+    path: "/tshirt",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <Tshirt />
+      </ProtectedRoute>
+    ),
+    name: "T-shirt",
+   
+  },
+  {
+    path: "/shirt",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <Shirt />
+      </ProtectedRoute>
+    ),
+    name: "Shirt",
+    
+  },
+
+  // 🔒 Admin routes
+  { path: "/admin", Component: ()=> (
+    <ProtectedRoute roleRequired="admin">
+      <Admin />
+    </ProtectedRoute>
+  ), role: "admin" },
+  { path: "/dashboard", Component:()=> (
+    <ProtectedRoute roleRequired="admin">
+      <AdminDashboard />
+    </ProtectedRoute>
+  ), name: "Dashboard", role: "admin" },
+
+  {
+    path: "/cart",
+    Component: () => (
+      <ProtectedRoute roleRequired="buyer">
+        <Cart />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/wishlist",
+    Component: () => (
+      <ProtectedRoute roleRequired="buyer">
+        <Wishlist />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/tshirt/:id",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <Item />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/login",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <Login />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/sign",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <Signup />
+      </ProtectedRoute>
+    ),
+  },
+
+  // 🔒 Admin-only data pages
+  { path: "/product", Component:()=>(
+    <ProtectedRoute roleRequired="admin">
+      <ProductData />
+    </ProtectedRoute>
+  ), role: "admin" },
+  { path: "/userdata", Component:()=>(
+    <ProtectedRoute roleRequired="admin">
+      <UserData/>
+    </ProtectedRoute>
+  ), role: "admin" },
+  { path: "/orderupdate", Component: ()=>(
+    <ProtectedRoute roleRequired="admin">
+      <OrderUpdate />
+    </ProtectedRoute>
+  ), role: "admin" },
+
+  {
+    path: "/payment",
+    Component: () => (
+      <ProtectedRoute roleRequired="buyer">
+        <Payment />
+      </ProtectedRoute>
+    ),
+    role: "buyer",
+  },
+  {
+    path: "/order",
+    Component: () => (
+      <ProtectedRoute roleRequired="buyer">
+        <Order />
+      </ProtectedRoute>
+    ),
+    role: "buyer",
+  },
+  {
+    path: "/search",
+    Component: () => (
+      <ProtectedRoute publicRoute>
+        <Search />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/ordertracking",
+    Component: () => (
+      <ProtectedRoute>
+        <OrderTracking />
+      </ProtectedRoute>
+    ),
+    name: "Orders",
+   
+  },
+];
+
+export default appRoute;

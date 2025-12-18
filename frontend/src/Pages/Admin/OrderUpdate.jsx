@@ -1,85 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import { Dropdown } from 'primereact/dropdown';
-
-// const OrderUpdate = () => {
-//   const [order, setOrder] = useState([]);
-//   const [selectedstatus, setSelectedstatus] = useState(null);
-//   const [selectedOrderId, setSelectedOrderId] = useState(null);
-
-//   const updateStatus = [
-//     { status: 'Pending' },
-//     { status: 'Confirmed' },
-//     { status: 'Shipped' },
-//     { status: 'Delivered' }
-//   ];
-
-//   useEffect(() => {
-//     fetchdata();
-//   }, []);
-
-//   const fetchdata = async () => {
-//     const res = await axios.get("http://localhost:5000/api/order/get-order");
-//     setOrder(res.data);
-//   };
-
-//   const handleSubmit = async () => {
-//     if (!selectedOrderId || !selectedstatus) return;
-
-//     await axios.patch(
-//       `http://localhost:5000/api/order/edit-order/${selectedOrderId}`,
-//       { status: selectedstatus.status }
-//     );
-
-//     fetchdata();
-//   };
-
-//   return (
-//     <div className="card">
-//       {order.map(orderItem => (
-//         <div key={orderItem._id} style={{ border: '1px solid #ccc', marginBottom: '20px', padding: '10px' }}>
-          
-//           <p><strong>Order Status:</strong> {orderItem.status}</p>
-//           <p><strong>Total Amount:</strong> {orderItem.totalAmount}</p>
-//           <p><strong>Payment Method:</strong> {orderItem.paymentMethod}</p>
-//           <p><strong>State:</strong> {orderItem.state}</p>
-//           <p><strong>City:</strong> {orderItem.city}</p>
-//           <p><strong>Pincode:</strong> {orderItem.pincode}</p>
-//           <p><strong>Phone:</strong> {orderItem.phone}</p>
-//           <p><strong>Email:</strong> {orderItem.email}</p>
-
-//           <ul>
-//             {orderItem.products.map(product => (
-//               <li key={product.productId || product._id}>
-//                 {product.name}
-//               </li>
-//             ))}
-//           </ul>
-
-//           <Dropdown
-//             value={selectedstatus}
-//             onChange={(e) => {
-//               setSelectedstatus(e.value);
-//               setSelectedOrderId(orderItem._id);
-//             }}
-//             options={updateStatus}
-//             optionLabel="status"
-//             placeholder="Update Status"
-//             className="w-full md:w-14rem"
-//           />
-
-//           <br /><br />
-
-//           <button onClick={handleSubmit}>Update</button>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default OrderUpdate;
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Dropdown } from 'primereact/dropdown';
@@ -101,7 +19,7 @@ const OrderUpdate = () => {
   }, []);
 
   const fetchdata = async () => {
-    const res = await axios.get("http://localhost:5000/api/order/get-order");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/order/get-order`);
     setOrder(res.data);
   };
 
@@ -109,7 +27,7 @@ const OrderUpdate = () => {
     if (!selectedOrderId || !selectedstatus) return;
 
     await axios.patch(
-      `http://localhost:5000/api/order/edit-order/${selectedOrderId}`,
+      `${import.meta.env.VITE_API_URL}/api/order/edit-order/${selectedOrderId}`,
       { status: selectedstatus.status }
     );
 
@@ -149,6 +67,7 @@ const OrderUpdate = () => {
                 <p className="font-semibold text-xs break-all">
                   {orderItem._id}
                 </p>
+                
               </div>
 
               <span
@@ -165,6 +84,8 @@ const OrderUpdate = () => {
               <p><strong>Payment:</strong> {orderItem.paymentMethod.toUpperCase()}</p>
               <p><strong>City:</strong> {orderItem.city}</p>
               <p><strong>Pincode:</strong> {orderItem.pincode}</p>
+              <p><strong>Transaction ID:</strong> {orderItem.paypalTransactionId}</p>
+              
             </div>
 
             {/* PRODUCTS */}
